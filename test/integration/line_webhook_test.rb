@@ -45,9 +45,7 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
 
   private
 
-  # LINE posts JSON, and the signature covers the bytes it posted — so the
-  # content type has to be stated or Rack consumes the body as a form and the
-  # controller signs an empty string.
+  # The content type is what LINE sends, so a delivery here carries it too.
   def deliver(body, signature: nil)
     post "/webhook",
          params: body,

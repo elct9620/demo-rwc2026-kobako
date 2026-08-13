@@ -31,7 +31,9 @@ class WebhooksController < ApplicationController
   MRUBY
 
   def create
-    parser.parse(body: request.body.read, signature: request.headers["X-Line-Signature"])
+    # The signature covers the bytes LINE posted, and #raw_post is the reading
+    # that rewinds — #body hands back whatever position an earlier reader left.
+    parser.parse(body: request.raw_post, signature: request.headers["X-Line-Signature"])
           .each { |event| answer(event) }
 
     head :ok
