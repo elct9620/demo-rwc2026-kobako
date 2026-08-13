@@ -17,6 +17,15 @@ gem "stimulus-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 
+# Evaluate untrusted mruby inside a Wasm sandbox [https://github.com/elct9620/kobako]
+gem "kobako", "~> 0.22"
+# The Flex Message DSL the sandboxed script speaks [https://github.com/elct9620/line-message-builder]
+gem "line-message-builder"
+# LINE Messaging API client and message types [https://github.com/line/line-bot-sdk-ruby]
+gem "line-bot-api"
+# Ask an LLM for the layout script the sandbox evaluates [https://github.com/crmne/ruby_llm]
+gem "ruby_llm"
+
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
 
