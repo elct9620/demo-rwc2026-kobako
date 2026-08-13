@@ -31,4 +31,10 @@ class LineFlexTest < ActiveSupport::TestCase
     assert_equal "Brown Cafe", message[:altText]
     assert_equal "bubble", message[:contents][:type]
   end
+
+  test "a script that never returns comes back as a value" do
+    result = LineFlex.render("while true; end")
+
+    assert_equal :timeout, result.reason
+  end
 end

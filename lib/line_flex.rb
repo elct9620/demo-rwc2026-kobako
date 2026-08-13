@@ -114,10 +114,24 @@ module LineFlex
     )
   end
 
-  # Evaluate +script+ and return the Flex Message it assembled.
+  # A run that produced no message. Untrusted code failing is an outcome, not
+  # an emergency, so it arrives as data the caller renders like any other.
+  Failure = Data.define(:reason, :message)
+
+  # Evaluate +script+ and return the Flex Message it assembled, or a Failure
+  # when the guest exhausted a cap, raised, or broke against a Service.
   def self.render(script)
     sandbox = Kobako::Sandbox.new(timeout: TIMEOUT_SECONDS, memory_limit: MEMORY_LIMIT_BYTES)
     sandbox.install(extension)
     sandbox.eval(script).value
+  rescue Kobako::TrapError, Kobako::SandboxError, Kobako::ServiceError => e
+    Failure.new(reason: reason_for(e), message: e.message)
   end
+
+  # Kobako's error classes already name why a run ended, so the reason is read
+  # off the class rather than restated as a table here.
+  def self.reason_for(error)
+    error.class.name.demodulize.delete_suffix("Error").underscore.to_sym
+  end
+  private_class_method :reason_for
 end
