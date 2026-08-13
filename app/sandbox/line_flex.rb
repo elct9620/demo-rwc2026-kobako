@@ -3,17 +3,20 @@
 # never leaves the host: every verb crosses the sandbox boundary as one
 # dispatch onto a wrapper this module owns.
 module LineFlex
-  # The vocabulary the guest may speak, and the whole of it. It is a public
-  # contract in both directions — the ceiling the sandbox enforces, and the list
-  # a script author writes against — so a verb absent here is a verb no script
-  # can use, whoever wrote it.
+  # The Flex DSL, and the whole of it. This list is a contract in both
+  # directions — the ceiling the sandbox enforces, and what a script author
+  # writes against — so a verb absent here is a verb no script can use, whoever
+  # wrote it.
   VERBS = %i[
     alt_text bubble carousel
     header hero hero_image body footer
     box text button image separator span
     message postback
-    to_h
   ].freeze
+
+  # Asking for the assembled message is not something a script writes, so it
+  # stays out of the vocabulary while still being a call the guest may make.
+  CALLABLE = (VERBS + %i[to_h]).freeze
 
   # A layout script is arithmetic and string building; a card measures around
   # 128 KiB of guest memory and a millisecond of wall clock. The gem's memory
@@ -55,9 +58,9 @@ module LineFlex
     private
 
     # Kobako's narrowing hook. Unlike the predicate above it is consulted for
-    # every name, including the ones this class defines concretely, and can only
-    # narrow what the floor already allows.
-    def respond_to_guest?(name) = VERBS.include?(name)
+    # every name, including the ones this class defines concretely — which is
+    # why #to_h is named here and nowhere else.
+    def respond_to_guest?(name) = CALLABLE.include?(name)
   end
 
   # The backend bound at the guest constant +Studio+. A provider mints one per
