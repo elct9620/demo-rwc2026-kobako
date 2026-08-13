@@ -32,6 +32,15 @@ class LineFlexTest < ActiveSupport::TestCase
     assert_equal "bubble", message[:contents][:type]
   end
 
+  # Base#context is a public method on every builder node, and its return value
+  # would cross back as a live Handle into the context chain. Nothing but VERBS
+  # decides that this name is unreachable.
+  test "a verb outside the vocabulary never reaches the builder" do
+    result = LineFlex.render("Flex.with { context }")
+
+    assert_equal :no_service, result.reason
+  end
+
   test "a script that never returns comes back as a value" do
     result = LineFlex.render("while true; end")
 
