@@ -15,10 +15,11 @@ module LineFlex
     to_h
   ].freeze
 
-  # Caps on one untrusted run. Both are far below the gem defaults because a
-  # layout script that needs more than this is not a layout script.
+  # A layout script is arithmetic and string building; a card measures around
+  # 128 KiB of guest memory and a millisecond of wall clock. The gem's memory
+  # default already sits an order of magnitude above that, but its 60 second
+  # timeout is a cap nobody watching would wait out.
   TIMEOUT_SECONDS = 1.0
-  MEMORY_LIMIT_BYTES = 8 * 1024 * 1024
 
   # A line-message-builder node, exposed to the guest as exactly VERBS.
   #
@@ -121,7 +122,7 @@ module LineFlex
   # Evaluate +script+ and return the Flex Message it assembled, or a Failure
   # when the guest exhausted a cap, raised, or broke against a Service.
   def self.render(script)
-    sandbox = Kobako::Sandbox.new(timeout: TIMEOUT_SECONDS, memory_limit: MEMORY_LIMIT_BYTES)
+    sandbox = Kobako::Sandbox.new(timeout: TIMEOUT_SECONDS)
     sandbox.install(extension)
     sandbox.eval(script).value
   rescue Kobako::TrapError, Kobako::SandboxError, Kobako::ServiceError => e

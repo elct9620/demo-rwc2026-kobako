@@ -3,13 +3,13 @@
     {
       "warning_type": "Dangerous Eval",
       "warning_code": 13,
-      "fingerprint": "41a5ec1e6e68bc8647be62067dc6d8fb0060ca3ed19b1eaced4dfa10f1d4f6d5",
+      "fingerprint": "b3d6076ea1c5d3bc9410063956afc00a23d43f20019b0476c53b494e0f099e58",
       "check_name": "Evaluation",
       "message": "Dynamic code evaluation",
       "file": "app/sandbox/line_flex.rb",
-      "line": 126,
+      "line": 127,
       "link": "https://brakemanscanner.org/docs/warning_types/dangerous_eval/",
-      "code": "Kobako::Sandbox.new(:timeout => 1.0, :memory_limit => (MEMORY_LIMIT_BYTES)).eval(script)",
+      "code": "Kobako::Sandbox.new(:timeout => 1.0).eval(script)",
       "render_path": null,
       "location": {
         "type": "method",
