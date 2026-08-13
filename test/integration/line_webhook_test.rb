@@ -2,16 +2,27 @@ require "test_helper"
 
 class LineWebhookTest < ActionDispatch::IntegrationTest
   CHANNEL_SECRET = "channel-secret-for-tests"
+  CHANNEL_ENV = {
+    "LINE_CHANNEL_SECRET" => CHANNEL_SECRET,
+    "LINE_CHANNEL_ACCESS_TOKEN" => "channel-access-token-for-tests"
+  }.freeze
   REPLY_URL = "https://api.line.me/v2/bot/message/reply"
 
   setup do
-    ENV["LINE_CHANNEL_SECRET"] = CHANNEL_SECRET
-    ENV["LINE_CHANNEL_ACCESS_TOKEN"] = "channel-access-token-for-tests"
+    @environment = ENV.to_h.slice(*CHANNEL_ENV.keys)
+    ENV.update(CHANNEL_ENV)
     @reply = stub_request(:post, REPLY_URL).to_return(
       status: 200,
       body: { sentMessages: [ { id: "461230966842064897", quoteToken: "IStG5h1Tz7b..." } ] }.to_json,
       headers: { "Content-Type" => "application/json" }
     )
+  end
+
+  # The channel values live in the process, so this file leaves them as it
+  # found them rather than for whatever runs next.
+  teardown do
+    CHANNEL_ENV.each_key { |key| ENV.delete(key) }
+    ENV.update(@environment)
   end
 
   test "a message is answered with the card the sandbox assembled" do
