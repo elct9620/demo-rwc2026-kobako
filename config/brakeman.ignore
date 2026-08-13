@@ -1,0 +1,29 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Dangerous Eval",
+      "warning_code": 13,
+      "fingerprint": "41a5ec1e6e68bc8647be62067dc6d8fb0060ca3ed19b1eaced4dfa10f1d4f6d5",
+      "check_name": "Evaluation",
+      "message": "Dynamic code evaluation",
+      "file": "app/sandbox/line_flex.rb",
+      "line": 126,
+      "link": "https://brakemanscanner.org/docs/warning_types/dangerous_eval/",
+      "code": "Kobako::Sandbox.new(:timeout => 1.0, :memory_limit => (MEMORY_LIMIT_BYTES)).eval(script)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "LineFlex",
+        "method": "self.render"
+      },
+      "user_input": null,
+      "confidence": "Weak",
+      "cwe_id": [
+        913,
+        95
+      ],
+      "note": "Kobako::Sandbox#eval is not Kernel#eval: the source runs inside a Wasm cell with no reach into host memory, files, sockets or ENV, under a wall-clock and memory cap, and can call only the Services bound to it. Evaluating untrusted source under that confinement is what this application is for, so the danger this check names is the one the sandbox removes. The vocabulary the guest may speak is LineFlex::VERBS and is covered by test/sandbox/line_flex_test.rb."
+    }
+  ],
+  "brakeman_version": "8.0.6"
+}
