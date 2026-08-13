@@ -72,4 +72,7 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+
+  # Hold the LINE API at arm's length so a test can read what was sent to it
+  gem "webmock"
 end
