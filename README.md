@@ -23,7 +23,8 @@ shows rather than exceptions that leak host detail.
 | `ruby_llm` | Writes the layout script |
 | `line-bot-api` | LINE Messaging API client and message types |
 
-Kobako ships precompiled platform gems, so installing it needs no Rust toolchain.
+Kobako ships precompiled gems for macOS and 64-bit Linux, so installing it there
+needs no Rust toolchain.
 
 ## Running it
 
