@@ -28,7 +28,7 @@ class LineFlexTest < ActiveSupport::TestCase
     message = LineFlex.render(CARD)
 
     assert_equal "flex", message[:type]
-    assert_equal "Brown Cafe", message[:altText]
+    assert_equal "Brown Cafe", message[:alt_text]
     assert_equal "bubble", message[:contents][:type]
   end
 

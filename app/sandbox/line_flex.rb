@@ -65,11 +65,16 @@ module LineFlex
 
   # The backend bound at the guest constant +Studio+. A provider mints one per
   # invocation, so no builder state survives into the next run.
+  #
+  # The context is empty on purpose: it is what a builder node delegates unknown
+  # names to, so anything placed here would be reachable from a script. Host
+  # values belong in a Service bound for that purpose instead. Its +:sdkv2+ mode
+  # spells every key the way line-bot-api reads it.
   class Studio
     def root
       Node.new(
         Line::Message::Builder::Flex::Builder.new(
-          context: Line::Message::Builder::Context.new(nil)
+          context: Line::Message::Builder::Context.new(nil, mode: :sdkv2)
         )
       )
     end
