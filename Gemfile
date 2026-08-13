@@ -75,4 +75,7 @@ group :test do
 
   # Hold the LINE API at arm's length so a test can read what was sent to it
   gem "webmock"
+
+  # Minitest 6 ships its stubs separately
+  gem "minitest-mock"
 end
