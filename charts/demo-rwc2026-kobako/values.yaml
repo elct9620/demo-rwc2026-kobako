@@ -1,0 +1,24 @@
+# The image follows main. `latest` moving is what a rollout restart picks up;
+# pinning a tag here runs one particular build instead.
+image:
+  repository: ghcr.io/elct9620/demo-rwc2026-kobako/app
+  tag: latest
+  pullPolicy: Always
+
+# The Secret holding SECRET_KEY_BASE, LINE_CHANNEL_SECRET and
+# LINE_CHANNEL_ACCESS_TOKEN.
+#
+# No default, because every failure it causes is invisible: without the first
+# the app does not boot, and without the other two it boots, answers the health
+# check, and fails only when LINE delivers something. An install that stops
+# here is the one failure anyone sees in time.
+secretName: ""
+
+# Where the four SQLite databases live.
+#
+# The cluster's default class provisions it — on k3s that is local-path, which
+# binds the volume to whichever node the Pod first lands on and cannot expand
+# it afterwards. So this size is chosen once, and deleting the release deletes
+# what is in it.
+storage:
+  size: 1Gi

@@ -1,0 +1,86 @@
+{{- if not .Values.secretName }}
+{{- fail "secretName is required: without the LINE channel credentials the app boots green and fails on the first delivery" }}
+{{- end }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  # One writer, and never two at once. The four SQLite files share one volume,
+  # so a rolling update would have the incoming Pod open them — and run
+  # `db:prepare` against them — while the outgoing one is still serving.
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        # local-path creates the directory as root. This is what lets the
+        # image's own user write the databases into it.
+        fsGroup: 1000
+      containers:
+        - name: app
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          # No command or args on purpose: the entrypoint prepares the database
+          # only when it recognises the image's own CMD, so overriding either
+          # skips the migration without saying so.
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+            # Runs the Solid Queue supervisor inside Puma, which is what one
+            # replica needs and all it needs.
+            - name: SOLID_QUEUE_IN_PUMA
+              value: "true"
+            - name: SECRET_KEY_BASE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretName }}
+                  key: SECRET_KEY_BASE
+            - name: LINE_CHANNEL_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretName }}
+                  key: LINE_CHANNEL_SECRET
+            - name: LINE_CHANNEL_ACCESS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretName }}
+                  key: LINE_CHANNEL_ACCESS_TOKEN
+          # /up answers 200 once the app boots, which is the whole of what this
+          # Pod can be asked: a sandbox run that fails comes back as a message,
+          # not as an unhealthy process.
+          startupProbe:
+            httpGet:
+              path: /up
+              port: http
+            periodSeconds: 5
+            failureThreshold: 12
+          readinessProbe:
+            httpGet:
+              path: /up
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /up
+              port: http
+            periodSeconds: 10
+            failureThreshold: 3
+          volumeMounts:
+            - name: storage
+              mountPath: /rails/storage
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}

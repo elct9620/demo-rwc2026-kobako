@@ -1,0 +1,9 @@
+Point the tunnel at this address:
+
+    http://{{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
+
+then set the LINE channel's webhook URL to <tunnel>/webhook.
+
+A new build of the app is published as `latest`, so what picks it up is:
+
+    kubectl -n {{ .Release.Namespace }} rollout restart deployment/{{ .Release.Name }}

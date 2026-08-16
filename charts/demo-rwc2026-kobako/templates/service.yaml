@@ -1,0 +1,17 @@
+{{/*
+The one address inside the cluster. Nothing here terminates TLS or claims a
+hostname — reaching this from the internet is the tunnel's job, and LINE only
+delivers to HTTPS, so that is where the certificate lives.
+*/}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ .Release.Name }}
+  ports:
+    - name: http
+      port: 80
+      targetPort: http

@@ -1,0 +1,15 @@
+apiVersion: v2
+name: demo-rwc2026-kobako
+description: A talk demo answering LINE webhooks with a Flex Message a Wasm sandbox built
+type: application
+
+# Raised by hand, and only when this chart changes. The image it installs
+# follows `latest` instead, so an app change is a rollout rather than a
+# version — there is no appVersion here for the two to disagree about.
+version: 0.1.0
+
+# What ties the published chart to this repository, so the package takes the
+# repository's visibility rather than landing private and waiting for someone
+# to open it.
+annotations:
+  org.opencontainers.image.source: https://github.com/elct9620/demo-rwc2026-kobako

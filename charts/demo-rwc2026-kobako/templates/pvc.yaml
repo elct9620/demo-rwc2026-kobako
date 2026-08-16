@@ -1,0 +1,16 @@
+{{/*
+No storageClassName, so the cluster's default provisions this — on k3s that is
+local-path. The claim stays Pending until the Pod is scheduled, which is
+WaitForFirstConsumer doing its job rather than a failure, and the volume is
+bound to that node from then on.
+*/}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.storage.size }}
