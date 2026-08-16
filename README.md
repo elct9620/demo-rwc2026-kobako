@@ -75,6 +75,15 @@ bin/rails test
 bin/ci                     # style, security and test gate
 ```
 
+The half a test cannot reach — the gateway answering, the key being accepted,
+the model still writing something the sandbox will run — is one real request
+away:
+
+```bash
+set -a && source .env.production && set +a
+bin/rails runner script/answer_once.rb
+```
+
 Answering a real message needs a channel, a key to write with, and a public
 URL:
 
