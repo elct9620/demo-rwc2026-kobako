@@ -91,3 +91,67 @@ jobs:
           RAILS_ENV: test
           # REDIS_URL: redis://localhost:6379/0
         run: bin/rails db:test:prepare test
+
+  # What a cluster runs, published only once the checks above have answered
+  # for the commit. One platform per runner — the default — so the sandbox
+  # gem's native dependencies are compiled rather than emulated. A pull
+  # request builds without pushing, which is what proves the Dockerfile
+  # still builds.
+  image:
+    name: GHCR
+    needs: [ scan_ruby, scan_js, lint, test ]
+    permissions:
+      contents: read
+      packages: write
+      # Provenance attestations and cache entries are signed with GitHub OIDC.
+      id-token: write
+    uses: docker/github-builder/.github/workflows/build.yml@27ade872c1e2296e62ef15ab3b10d37665e57cf7 # v1
+    with:
+      output: image
+      push: ${{ github.event_name != 'pull_request' }}
+      platforms: linux/amd64,linux/arm64
+      cache: true
+      set-meta-labels: true
+      # Under the repository rather than as it: the repository's own reference
+      # is the chart's, and the image is one thing the chart installs.
+      meta-images: ghcr.io/${{ github.repository }}/app
+      # `latest` is what the chart pulls, and the digest tag is what says which
+      # commit a running Pod came from.
+      meta-tags: |
+        type=raw,value=latest,enable={{is_default_branch}}
+        type=sha
+    secrets:
+      registry-auths: |
+        - registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+  # `helm push` takes the name and the tag from Chart.yaml and takes nothing
+  # else, so the chart lands under the repository's own reference with the
+  # image nested beneath it. Pushed after the image, because the `latest` the
+  # chart names has to exist by the time anyone can install it. A version
+  # pushed twice replaces what was there, which is what makes bumping
+  # Chart.yaml the way to change a cluster.
+  chart:
+    name: GHCR Chart
+    needs: image
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
+
+      - name: Log in to GHCR
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo "$GITHUB_TOKEN" | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Package and push the chart
+        run: |
+          helm package charts/demo-rwc2026-kobako -d ${{ runner.temp }}
+          helm push ${{ runner.temp }}/demo-rwc2026-kobako-*.tgz oci://ghcr.io/${{ github.repository_owner }}
