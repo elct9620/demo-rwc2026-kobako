@@ -25,28 +25,26 @@ class AnswerMessageJob < ApplicationJob
   def perform(reply_token:, text:, chat_id: nil)
     show_loading(chat_id)
 
-    reply(reply_token, answer_to(text))
+    reply(reply_token, message_for(card_for(text)))
   end
 
   private
 
-  # The two boundaries this crosses fail differently. A script the sandbox
-  # stopped is the demo's point and goes back as it happened; the LLM is an
-  # ordinary outside service, and what its failures carry is provider detail
-  # nobody in a chat can act on, so that one is named plainly and explained to
-  # the log.
-  def answer_to(text)
-    message_for(LineFlex.render(script_for(text)))
-  # A missing key raises outside RubyLLM::Error, so both are named here.
-  rescue RubyLLM::Error, RubyLLM::ConfigurationError => e
+  # Everything outside this app happens in here, and every way it can go wrong
+  # ends the same: the job is not retried, so an exception leaving this method
+  # is a sender left watching an animation that never resolves. That is why the
+  # rescue is as wide as it is — a missing key raises outside RubyLLM::Error,
+  # and a gateway wording its errors differently than ruby_llm expects makes
+  # ruby_llm raise while parsing the error itself. The log keeps the detail;
+  # the chat gets a sentence.
+  #
+  # The script is untrusted the moment it comes back — nothing here reads it
+  # before the sandbox does.
+  def card_for(text)
+    LineFlex.render(FlexMessageAgent.create!.ask(text).content.fetch("script"))
+  rescue StandardError => e
     logger.error("The layout could not be written: #{e.class}: #{e.message}")
-    Line::Bot::V2::MessagingApi::TextMessage.new(text: "The layout could not be written.")
-  end
-
-  # Untrusted the moment it comes back: it is a string the sandbox evaluates,
-  # and nothing here reads it first.
-  def script_for(text)
-    FlexMessageAgent.create!.ask(text).content.fetch("script")
+    :unwritten
   end
 
   # LINE's own answer to a reply that takes a moment. It is decoration on the
@@ -63,12 +61,19 @@ class AnswerMessageJob < ApplicationJob
     )
   end
 
+  # Three outcomes, and the two that are not a card read differently on
+  # purpose. A script the sandbox stopped is the point of the demo, so its
+  # reason goes back to whoever triggered it. A layout that was never written
+  # is an outside service having a bad day, and its detail belongs in the log.
   def message_for(result)
-    return Line::Bot::V2::MessagingApi::FlexMessage.create(result) unless result.is_a?(LineFlex::Failure)
-
-    # A script the sandbox stopped is the thing worth showing, so the reason
-    # goes back to whoever triggered it rather than into a log nobody reads.
-    Line::Bot::V2::MessagingApi::TextMessage.new(text: "The script did not finish: #{result.reason}")
+    case result
+    when :unwritten
+      Line::Bot::V2::MessagingApi::TextMessage.new(text: "The layout could not be written.")
+    when LineFlex::Failure
+      Line::Bot::V2::MessagingApi::TextMessage.new(text: "The script did not finish: #{result.reason}")
+    else
+      Line::Bot::V2::MessagingApi::FlexMessage.create(result)
+    end
   end
 
   def reply(token, message)

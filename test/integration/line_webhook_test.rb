@@ -64,6 +64,25 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
     end
   end
 
+  # A gateway in front of the model words its own errors its own way, and
+  # ruby_llm raises while parsing them rather than raising one of its own — a
+  # failure in no shape this app can name. It still has to reach the sender.
+  test "an error worded the gateway's own way is still answered" do
+    stub_request(:post, WRITER_URL).to_return(
+      status: 401,
+      body: { success: false, error: [ { code: 2009, message: "Unauthorized" } ], name: "AiGatewayError" }.to_json,
+      headers: { "Content-Type" => "application/json" }
+    )
+
+    deliver(text_event)
+
+    assert_response :ok
+    assert_requested(:post, REPLY_URL) do |request|
+      message = JSON.parse(request.body)["messages"].first
+      message["type"] == "text" && message["text"].include?("could not be written")
+    end
+  end
+
   # The writer is an ordinary outside service. When it cannot answer, the
   # sender still gets something — a job that dies holding the reply token
   # leaves them watching an animation that never resolves.
