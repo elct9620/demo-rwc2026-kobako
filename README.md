@@ -4,14 +4,24 @@ A talk demo. The layout of a LINE Flex Message is *code* a sandbox evaluates,
 not a template baked into the app.
 
 ```
-LINE ──▶ POST /webhook ──▶ signature ──▶ layout script
-                                              │
-                                    Kobako (wasm sandbox)
-                                              │
+LINE ──▶ POST /webhook ──▶ signature ──▶ enqueue ──▶ 200 OK
+                                            │
+                                     AnswerMessageJob
+                                            │
+                          loading animation, then layout script
+                                            │
+                                  Kobako (wasm sandbox)
+                                            │
                         line-message-builder, held on the host
-                                              │
+                                            │
                               Flex Message ──▶ reply to LINE
 ```
+
+The webhook is answered before the card exists. Writing the layout takes as
+long as it takes — soon it will be an LLM doing the writing — and none of that
+is time LINE waits on, so the sender is shown a loading animation instead. A
+reply token is spent once and expires about a minute after the webhook, which
+is why a job that fails is not retried.
 
 The script is untrusted. It never reaches the host's memory, files, network or
 credentials — the only vocabulary it gets is `LineFlex::VERBS`, the Flex DSL the
@@ -27,11 +37,13 @@ check *rejects* — a delivery it cannot verify never gets parsed. The sandbox
 | Path | What it holds |
 | --- | --- |
 | `app/sandbox/line_flex.rb` | The boundary. `VERBS` is the whole vocabulary a script may speak |
-| `app/controllers/webhooks_controller.rb` | Where a message arrives and a reply leaves |
+| `app/controllers/webhooks_controller.rb` | Where a delivery arrives and is verified |
+| `app/jobs/answer_message_job.rb` | Where the card is built and the reply leaves |
 | `charts/demo-rwc2026-kobako/` | What k3s is asked for, with the reason beside each value |
 
-The script the demo runs is fixed. Handing that job to `ruby_llm` comes after
-the vocabulary is written down as a contract worth generating against.
+The script the demo runs is fixed. Handing the writing of it to `ruby_llm`
+comes after the vocabulary is written down as a contract worth generating
+against.
 
 ## The parts
 
@@ -61,6 +73,10 @@ LINE_CHANNEL_ACCESS_TOKEN=...  # authorises the reply
 bin/dev                        # then point a tunnel at :3000 and set the
                                # channel's webhook URL to <tunnel>/webhook
 ```
+
+`bin/dev` needs no second process: development runs jobs in-process. On the
+cluster the chart asks Puma to supervise Solid Queue, which is what one replica
+needs and all it needs.
 
 ## Deploying it
 
