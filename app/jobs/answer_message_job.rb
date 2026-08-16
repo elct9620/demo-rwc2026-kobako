@@ -37,6 +37,7 @@ class AnswerMessageJob < ApplicationJob
   # the log.
   def answer_to(text)
     message_for(LineFlex.render(script_for(text)))
+  # A missing key raises outside RubyLLM::Error, so both are named here.
   rescue RubyLLM::Error, RubyLLM::ConfigurationError => e
     logger.error("The layout could not be written: #{e.class}: #{e.message}")
     Line::Bot::V2::MessagingApi::TextMessage.new(text: "The layout could not be written.")
