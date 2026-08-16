@@ -72,13 +72,24 @@ Everything goes in a namespace of its own, so the whole demo is one thing to
 put up and one thing to take down. The namespace and the Secret come first:
 the chart names no default for the Secret, and a Pod cannot start without it.
 
+The three values go through a file rather than the command line, so they stay
+out of the shell's history. `.env*` is ignored by git and by Docker, so this
+one is safe where it sits:
+
+```bash
+cat > .env.production <<EOF
+SECRET_KEY_BASE=$(bin/rails secret)
+LINE_CHANNEL_SECRET=...
+LINE_CHANNEL_ACCESS_TOKEN=...
+EOF
+chmod 600 .env.production
+```
+
 ```bash
 kubectl create namespace rwc2026-demo
 
 kubectl -n rwc2026-demo create secret generic demo-line \
-  --from-literal=SECRET_KEY_BASE="$(bin/rails secret)" \
-  --from-literal=LINE_CHANNEL_SECRET=... \
-  --from-literal=LINE_CHANNEL_ACCESS_TOKEN=...
+  --from-env-file=.env.production
 
 helm upgrade -i demo oci://ghcr.io/elct9620/demo-rwc2026-kobako \
   --version 0.1.0 -n rwc2026-demo --set secretName=demo-line
@@ -86,6 +97,13 @@ helm upgrade -i demo oci://ghcr.io/elct9620/demo-rwc2026-kobako \
 
 `SECRET_KEY_BASE` has to stay put: changing it invalidates everything already
 signed with it.
+
+Then point the tunnel at the address the chart prints, and set the channel's
+webhook URL to that tunnel's `/webhook`:
+
+```
+http://demo.rwc2026-demo.svc.cluster.local   →   https://rwc2026-demo.aotoki.dev
+```
 
 The two layers move separately, and each has its own way of moving:
 
