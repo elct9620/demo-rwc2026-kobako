@@ -18,7 +18,11 @@ RubyLLM.configure do |config|
 
   # The model is written down so the demo answers the same way twice, and
   # overridable so trying another one is not a commit.
-  config.default_model = ENV.fetch("OPENAI_MODEL", "gpt-5.6-luna")
+  #
+  # It sits a generation back because the writer needs tools and reasoning at
+  # once, and from gpt-5.4 onwards that pair only travels on OpenAI's Responses
+  # API — which ruby_llm does not speak yet.
+  config.default_model = ENV.fetch("OPENAI_MODEL", "gpt-5-mini")
 
   # A reply token expires about a minute after the webhook, and the job holding
   # it is not retried. RubyLLM would rather wait five minutes and try three

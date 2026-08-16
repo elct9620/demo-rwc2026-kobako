@@ -3,9 +3,9 @@
 # describes the boundary so the writer can aim at it, and the sandbox is what
 # holds it.
 class FlexMessageAgent < RubyLLM::Agent
-  # The model is named rather than looked up. It is newer than the registry
-  # ruby_llm ships with, and naming the provider is what lets that lookup be
-  # skipped — the row stored for it is minted from this rather than fetched.
+  # The model is named rather than looked up, because it comes from the
+  # environment and may well be one the registry ruby_llm ships has never heard
+  # of. Naming the provider is what lets that lookup be skipped.
   model RubyLLM.config.default_model, provider: :openai, assume_model_exists: true
 
   # Every message opens its own chat. Nothing ties one sender's messages
@@ -17,6 +17,10 @@ class FlexMessageAgent < RubyLLM::Agent
   instructions
 
   tools LayoutCheckTool
+
+  # Wanting this alongside the tool is what pins the model to an older
+  # generation; the initializer says why.
+  thinking effort: "medium"
 
   # One field, because the whole answer is the script. Structured output is
   # what keeps prose, apologies and code fences out of what the sandbox is

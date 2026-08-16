@@ -89,7 +89,9 @@ bin/dev                        # then point a tunnel at :3000 and set the
 A Cloudflare AI Gateway speaks OpenAI's own API, so it is the address that
 changes and nothing else — `OPENAI_API_BASE` is where it goes, and unset means
 OpenAI directly. `OPENAI_MODEL` overrides the model the demo is written
-against, which is `gpt-5.6-luna`.
+against, which is `gpt-5-mini` — a generation back, because the writer needs
+tools and reasoning at once and newer models only carry that pair on OpenAI's
+Responses API, which `ruby_llm` does not speak yet.
 
 ```bash
 OPENAI_API_BASE=https://gateway.ai.cloudflare.com/v1/<account>/<gateway>/openai

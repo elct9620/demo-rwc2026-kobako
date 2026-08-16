@@ -145,7 +145,7 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
   def written(script)
     {
       id: "chatcmpl-for-tests",
-      model: "gpt-5.6-luna",
+      model: "gpt-5-mini",
       choices: [
         { index: 0, message: { role: "assistant", content: { script: script }.to_json }, finish_reason: "stop" }
       ]
