@@ -1,9 +1,10 @@
 # syntax=docker/dockerfile:1
 # check=error=true
 
-# This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
+# This Dockerfile is designed for production, not development. What runs it is
+# the chart under charts/; by hand it is:
 # docker build -t dynamic_flex_message .
-# docker run -d -p 80:80 -e RAILS_MASTER_KEY=<value from config/master.key> --name dynamic_flex_message dynamic_flex_message
+# docker run -d -p 3000:3000 -e RAILS_MASTER_KEY=<value from config/master.key> --name dynamic_flex_message dynamic_flex_message
 
 # For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
 
