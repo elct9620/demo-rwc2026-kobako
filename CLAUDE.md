@@ -9,11 +9,12 @@ runs untrusted mruby inside a **Kobako** WASM sandbox to produce a LINE Flex
 Message payload — the message layout is code the sandbox evaluates, not a
 template baked into the app.
 
-It exists to be read and shown on stage, not deployed. So the demo is the
-smallest thing that makes the idea visible end-to-end: one slice, no
-abstraction added before a second caller needs it, no layer the demo cannot
-show. Prefer vanilla Rails (`app/models`, Concerns) over a service layer;
-prefer deleting a step over generalising it.
+It exists to be read and shown on stage, and it is deployed to a k3s cluster
+so LINE can reach it there. So the demo is the smallest thing that makes the
+idea visible end-to-end: one slice, no abstraction added before a second
+caller needs it, no layer the demo cannot show. Prefer vanilla Rails
+(`app/models`, Concerns) over a service layer; prefer deleting a step over
+generalising it.
 
 ## Stack
 

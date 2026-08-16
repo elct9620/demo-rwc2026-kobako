@@ -28,6 +28,7 @@ check *rejects* — a delivery it cannot verify never gets parsed. The sandbox
 | --- | --- |
 | `app/sandbox/line_flex.rb` | The boundary. `VERBS` is the whole vocabulary a script may speak |
 | `app/controllers/webhooks_controller.rb` | Where a message arrives and a reply leaves |
+| `charts/demo-rwc2026-kobako/` | What k3s is asked for, with the reason beside each value |
 
 The script the demo runs is fixed. Handing that job to `ruby_llm` comes after
 the vocabulary is written down as a contract worth generating against.
@@ -61,4 +62,31 @@ bin/dev                        # then point a tunnel at :3000 and set the
                                # channel's webhook URL to <tunnel>/webhook
 ```
 
-This exists to be read and shown on stage, not deployed.
+## Deploying it
+
+On stage it runs on k3s. The chart creates one Pod, one SQLite volume and one
+internal address; a Cloudflare Tunnel is what puts that address on the public
+HTTPS URL LINE delivers to.
+
+```bash
+kubectl create secret generic demo-line \
+  --from-literal=SECRET_KEY_BASE="$(bin/rails secret)" \
+  --from-literal=LINE_CHANNEL_SECRET=... \
+  --from-literal=LINE_CHANNEL_ACCESS_TOKEN=...
+
+helm upgrade -i demo oci://ghcr.io/elct9620/demo-rwc2026-kobako \
+  --version 0.1.0 --set secretName=demo-line
+```
+
+`SECRET_KEY_BASE` has to stay put: changing it invalidates everything already
+signed with it.
+
+The two layers move separately, and each has its own way of moving:
+
+| Changed | Published as | Picked up by |
+| --- | --- | --- |
+| The app | `ghcr.io/elct9620/demo-rwc2026-kobako/app:latest` | `kubectl rollout restart deployment/demo` |
+| The chart | `oci://ghcr.io/elct9620/demo-rwc2026-kobako` | Bump `version` in `Chart.yaml`, then `helm upgrade --version` |
+
+The claim stays `Pending` until the Pod is scheduled — that is `local-path`
+binding the volume to a node, not a failure.
