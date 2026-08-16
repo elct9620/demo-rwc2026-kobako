@@ -47,8 +47,17 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "an unsigned delivery is refused before anything is parsed" do
+  test "a delivery signed with the wrong key is refused before anything is parsed" do
     deliver(text_event, signature: "not-the-signature")
+
+    assert_response :bad_request
+    assert_not_requested @reply
+  end
+
+  # Anything that is not LINE may leave the header off entirely, and a boundary
+  # that rejects has to answer that the same way it answers a wrong one.
+  test "a delivery carrying no signature at all is refused the same way" do
+    deliver(text_event, signature: nil)
 
     assert_response :bad_request
     assert_not_requested @reply
@@ -57,13 +66,13 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
   private
 
   # The content type is what LINE sends, so a delivery here carries it too.
-  def deliver(body, signature: nil)
-    post "/webhook",
-         params: body,
-         headers: {
-           "CONTENT_TYPE" => "application/json",
-           "X-Line-Signature" => signature || signature_for(body)
-         }
+  # Passing nil leaves the header off, which is not the same as sending a
+  # wrong one and is the reason both are stated above.
+  def deliver(body, signature: signature_for(body))
+    headers = { "CONTENT_TYPE" => "application/json" }
+    headers["X-Line-Signature"] = signature if signature
+
+    post "/webhook", params: body, headers: headers
   end
 
   def signature_for(body)

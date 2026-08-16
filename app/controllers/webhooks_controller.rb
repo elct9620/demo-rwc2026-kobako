@@ -33,7 +33,11 @@ class WebhooksController < ApplicationController
   def create
     # The signature covers the bytes LINE posted, and #raw_post is the reading
     # that rewinds — #body hands back whatever position an earlier reader left.
-    parser.parse(body: request.raw_post, signature: request.headers["X-Line-Signature"])
+    #
+    # A caller that is not LINE may send no signature at all. #to_s makes that
+    # an empty one, so it is refused by the same comparison as a wrong one
+    # rather than raising on its way into the digest.
+    parser.parse(body: request.raw_post, signature: request.headers["X-Line-Signature"].to_s)
           .each { |event| answer(event) }
 
     head :ok
