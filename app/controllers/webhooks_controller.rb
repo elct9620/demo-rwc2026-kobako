@@ -30,7 +30,18 @@ class WebhooksController < ApplicationController
     return unless event.is_a?(Line::Bot::V2::Webhook::MessageEvent)
     return unless event.message.is_a?(Line::Bot::V2::Webhook::TextMessageContent)
 
-    AnswerMessageJob.perform_later(reply_token: event.reply_token, text: event.message.text)
+    AnswerMessageJob.perform_later(
+      reply_token: event.reply_token,
+      text: event.message.text,
+      chat_id: chat_id_for(event.source)
+    )
+  end
+
+  # The loading animation is a one-on-one chat's. A group or room names the
+  # member who spoke rather than a chat it can be drawn in, so those deliveries
+  # travel without one.
+  def chat_id_for(source)
+    source.user_id if source.is_a?(Line::Bot::V2::Webhook::UserSource)
   end
 
   def parser

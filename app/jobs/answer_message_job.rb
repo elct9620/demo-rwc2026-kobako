@@ -30,14 +30,36 @@ class AnswerMessageJob < ApplicationJob
     end
   MRUBY
 
+  # The smallest window LINE accepts. The animation clears the moment the reply
+  # arrives, so this number only shows when the reply never comes.
+  LOADING_SECONDS = 5
+
   # +text+ is what the message asked for, and it is what the generator will
   # write the script from. It travels with the token so that arrival needs no
   # second look at the webhook.
-  def perform(reply_token:, text:)
+  #
+  # +chat_id+ is nil for a delivery with no one-on-one chat to draw in.
+  def perform(reply_token:, text:, chat_id: nil)
+    show_loading(chat_id)
+
     reply(reply_token, message_for(LineFlex.render(SCRIPT)))
   end
 
   private
+
+  # LINE's own answer to a reply that takes a moment. It is decoration on the
+  # way to the card, so a refusal is not worth failing the answer over — and
+  # the SDK hands one back as a status rather than raising it.
+  def show_loading(chat_id)
+    return if chat_id.nil?
+
+    client.show_loading_animation(
+      show_loading_animation_request: Line::Bot::V2::MessagingApi::ShowLoadingAnimationRequest.new(
+        chat_id: chat_id,
+        loading_seconds: LOADING_SECONDS
+      )
+    )
+  end
 
   def message_for(result)
     return Line::Bot::V2::MessagingApi::FlexMessage.create(result) unless result.is_a?(LineFlex::Failure)

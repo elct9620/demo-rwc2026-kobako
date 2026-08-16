@@ -7,6 +7,8 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
     "LINE_CHANNEL_ACCESS_TOKEN" => "channel-access-token-for-tests"
   }.freeze
   REPLY_URL = "https://api.line.me/v2/bot/message/reply"
+  LOADING_URL = "https://api.line.me/v2/bot/chat/loading/start"
+  USER_ID = "Udeadbeefdeadbeefdeadbeefdeadbeef"
 
   setup do
     @environment = ENV.to_h.slice(*CHANNEL_ENV.keys)
@@ -16,6 +18,7 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
       body: { sentMessages: [ { id: "461230966842064897", quoteToken: "IStG5h1Tz7b..." } ] }.to_json,
       headers: { "Content-Type" => "application/json" }
     )
+    @loading = stub_request(:post, LOADING_URL).to_return(status: 202)
   end
 
   # The channel values live in the process, so this file leaves them as it
@@ -33,6 +36,23 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
       message = JSON.parse(request.body)["messages"].first
       message["type"] == "flex" && message["altText"] == "Brown Cafe"
     end
+  end
+
+  test "the sender is shown a loading animation while the answer is prepared" do
+    deliver(text_event)
+
+    assert_requested(:post, LOADING_URL) do |request|
+      JSON.parse(request.body)["chatId"] == USER_ID
+    end
+  end
+
+  # A group names the member who spoke, not a chat the animation can be drawn
+  # in, so the answer arrives without one rather than in someone's own chat.
+  test "a message from a group is answered with no loading animation" do
+    deliver(group_event)
+
+    assert_requested @reply
+    assert_not_requested @loading
   end
 
   test "a script the sandbox stopped is explained to whoever asked" do
@@ -83,15 +103,19 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
     Base64.strict_encode64(OpenSSL::HMAC.digest("SHA256", CHANNEL_SECRET, body))
   end
 
-  def text_event
+  def group_event
+    text_event(source: { type: "group", groupId: "Cdeadbeefdeadbeefdeadbeefdeadbeef", userId: USER_ID })
+  end
+
+  def text_event(source: { type: "user", userId: USER_ID })
     {
-      destination: "Udeadbeefdeadbeefdeadbeefdeadbeef",
+      destination: USER_ID,
       events: [
         {
           type: "message",
           mode: "active",
           timestamp: 1_700_000_000_000,
-          source: { type: "user", userId: "Udeadbeefdeadbeefdeadbeefdeadbeef" },
+          source: source,
           webhookEventId: "01FZ74A0TDDPYRVKNK77XKC3ZR",
           deliveryContext: { isRedelivery: false },
           replyToken: "reply-token",
