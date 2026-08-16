@@ -11,6 +11,11 @@ module DynamicFlexMessage
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.1
 
+    # Nothing is attached or uploaded here, so there are no variants to
+    # generate. Saying so is what keeps Active Storage from asking for an
+    # image library the demo would never call.
+    config.active_storage.variant_processor = :disabled
+
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.
