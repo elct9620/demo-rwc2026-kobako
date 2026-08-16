@@ -105,7 +105,7 @@ jobs:
       packages: write
       # Provenance attestations and cache entries are signed with GitHub OIDC.
       id-token: write
-    uses: docker/github-builder/.github/workflows/build.yml@27ade872c1e2296e62ef15ab3b10d37665e57cf7 # v1
+    uses: docker/github-builder/.github/workflows/build.yml@a492c6d04fd3315f67230809b44d60cc0acd50b3 # v1
     with:
       output: image
       push: ${{ github.event_name != 'pull_request' }}
