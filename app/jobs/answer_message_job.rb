@@ -6,6 +6,12 @@
 # after the webhook, so a second attempt would answer with a token LINE has
 # already refused — a run that failed has nothing left to reply with.
 class AnswerMessageJob < ApplicationJob
+  # A reply token authorises one message to one person, and the text beside it
+  # is what that person wrote. Active Job prints a job's arguments verbatim and
+  # config.filter_parameters does not reach them, so these stay out of the log
+  # entirely rather than travelling to wherever it is read.
+  self.log_arguments = false
+
   # The layout a generator will eventually write. Fixed for now, so the path it
   # travels is the only thing this exercises.
   SCRIPT = <<~MRUBY
