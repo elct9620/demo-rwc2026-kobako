@@ -131,7 +131,7 @@ kubectl -n rwc2026-demo create secret generic demo-line \
   --from-env-file=.env.production
 
 helm upgrade -i demo oci://ghcr.io/elct9620/demo-rwc2026-kobako \
-  --version 0.1.0 -n rwc2026-demo --set secretName=demo-line
+  --version 0.2.0 -n rwc2026-demo --set secretName=demo-line
 ```
 
 `SECRET_KEY_BASE` has to stay put: changing it invalidates everything already
