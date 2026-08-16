@@ -68,11 +68,15 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
   # The content type is what LINE sends, so a delivery here carries it too.
   # Passing nil leaves the header off, which is not the same as sending a
   # wrong one and is the reason both are stated above.
+  #
+  # The answer leaves from a job, so running whatever the delivery enqueued is
+  # part of delivering it — without that, every assertion below would be about
+  # a request that reached LINE only in the tests that expected it to.
   def deliver(body, signature: signature_for(body))
     headers = { "CONTENT_TYPE" => "application/json" }
     headers["X-Line-Signature"] = signature if signature
 
-    post "/webhook", params: body, headers: headers
+    perform_enqueued_jobs { post "/webhook", params: body, headers: headers }
   end
 
   def signature_for(body)
