@@ -1,6 +1,6 @@
-# Where the sandbox's output leaves the app. Writing the layout and running it
-# takes as long as it takes, so it happens here rather than in the request LINE
-# is waiting on.
+# Where the answer is written, run and sent. Asking an LLM for the layout and
+# running it takes as long as it takes, so it happens here rather than in the
+# request LINE is waiting on.
 #
 # Nothing is retried. A reply token is spent once and expires about a minute
 # after the webhook, so a second attempt would answer with a token LINE has
@@ -12,46 +12,41 @@ class AnswerMessageJob < ApplicationJob
   # entirely rather than travelling to wherever it is read.
   self.log_arguments = false
 
-  # The layout a generator will eventually write. Fixed for now, so the path it
-  # travels is the only thing this exercises.
-  SCRIPT = <<~MRUBY
-    Flex.with do
-      alt_text "Brown Cafe"
-      bubble do
-        body layout: :vertical, spacing: :md do
-          text do
-            span "Brown Cafe", weight: :bold, size: :xl
-          end
-          box layout: :baseline, spacing: :sm do
-            text "Time", color: "#aaaaaa", size: :sm, flex: 1
-            text "10:00 - 23:00", wrap: true, color: "#666666", size: :sm, flex: 5
-          end
-        end
-        footer layout: :vertical do
-          button style: :link, height: :sm do
-            message "CALL", label: "CALL"
-          end
-        end
-      end
-    end
-  MRUBY
+  # Long enough to cover the writing, which is the part that takes seconds.
+  # LINE accepts 5 to 60, the animation clears the moment the reply arrives,
+  # and a wait it stops covering is one the sender spends watching nothing.
+  LOADING_SECONDS = 20
 
-  # The smallest window LINE accepts. The animation clears the moment the reply
-  # arrives, so this number only shows when the reply never comes.
-  LOADING_SECONDS = 5
-
-  # +text+ is what the message asked for, and it is what the generator will
-  # write the script from. It travels with the token so that arrival needs no
-  # second look at the webhook.
+  # +text+ is what the message asked for, and it is what the layout is written
+  # from. It travels with the token so that arrival needs no second look at the
+  # webhook.
   #
   # +chat_id+ is nil for a delivery with no one-on-one chat to draw in.
   def perform(reply_token:, text:, chat_id: nil)
     show_loading(chat_id)
 
-    reply(reply_token, message_for(LineFlex.render(SCRIPT)))
+    reply(reply_token, answer_to(text))
   end
 
   private
+
+  # The two boundaries this crosses fail differently. A script the sandbox
+  # stopped is the demo's point and goes back as it happened; the LLM is an
+  # ordinary outside service, and what its failures carry is provider detail
+  # nobody in a chat can act on, so that one is named plainly and explained to
+  # the log.
+  def answer_to(text)
+    message_for(LineFlex.render(script_for(text)))
+  rescue RubyLLM::Error, RubyLLM::ConfigurationError => e
+    logger.error("The layout could not be written: #{e.class}: #{e.message}")
+    Line::Bot::V2::MessagingApi::TextMessage.new(text: "The layout could not be written.")
+  end
+
+  # Untrusted the moment it comes back: it is a string the sandbox evaluates,
+  # and nothing here reads it first.
+  def script_for(text)
+    FlexMessageAgent.create!.ask(text).content.fetch("script")
+  end
 
   # LINE's own answer to a reply that takes a moment. It is decoration on the
   # way to the card, so a refusal is not worth failing the answer over — and

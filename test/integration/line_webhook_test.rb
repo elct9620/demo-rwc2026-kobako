@@ -8,11 +8,31 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
   }.freeze
   REPLY_URL = "https://api.line.me/v2/bot/message/reply"
   LOADING_URL = "https://api.line.me/v2/bot/chat/loading/start"
+  WRITER_URL = "https://api.openai.com/v1/chat/completions"
   USER_ID = "Udeadbeefdeadbeefdeadbeefdeadbeef"
+  SCRIPT = <<~MRUBY
+    Flex.with do
+      alt_text "Brown Cafe"
+      bubble do
+        body layout: :vertical, spacing: :md do
+          text "10:00 - 23:00", wrap: true, color: "#666666", size: :sm
+        end
+      end
+    end
+  MRUBY
 
   setup do
     @environment = ENV.to_h.slice(*CHANNEL_ENV.keys)
     ENV.update(CHANNEL_ENV)
+    # The key is read once at boot, so a test puts it where the app kept it
+    # rather than in the environment it was read from.
+    @api_key = RubyLLM.config.openai_api_key
+    RubyLLM.config.openai_api_key = "openai-api-key-for-tests"
+    @writer = stub_request(:post, WRITER_URL).to_return(
+      status: 200,
+      body: written(SCRIPT),
+      headers: { "Content-Type" => "application/json" }
+    )
     @reply = stub_request(:post, REPLY_URL).to_return(
       status: 200,
       body: { sentMessages: [ { id: "461230966842064897", quoteToken: "IStG5h1Tz7b..." } ] }.to_json,
@@ -26,15 +46,32 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
   teardown do
     CHANNEL_ENV.each_key { |key| ENV.delete(key) }
     ENV.update(@environment)
+    RubyLLM.config.openai_api_key = @api_key
   end
 
   test "a message is answered with the card the sandbox assembled" do
     deliver(text_event)
 
     assert_response :ok
+    assert_requested @writer
     assert_requested(:post, REPLY_URL) do |request|
       message = JSON.parse(request.body)["messages"].first
       message["type"] == "flex" && message["altText"] == "Brown Cafe"
+    end
+  end
+
+  # The writer is an ordinary outside service. When it cannot answer, the
+  # sender still gets something — a job that dies holding the reply token
+  # leaves them watching an animation that never resolves.
+  test "a layout that could not be written is still answered" do
+    stub_request(:post, WRITER_URL).to_return(status: 500)
+
+    deliver(text_event)
+
+    assert_response :ok
+    assert_requested(:post, REPLY_URL) do |request|
+      message = JSON.parse(request.body)["messages"].first
+      message["type"] == "text" && message["text"].include?("could not be written")
     end
   end
 
@@ -97,6 +134,18 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
     headers["X-Line-Signature"] = signature if signature
 
     perform_enqueued_jobs { post "/webhook", params: body, headers: headers }
+  end
+
+  # A schema is in force, so the fields come back as JSON inside the
+  # assistant's message rather than as prose around it.
+  def written(script)
+    {
+      id: "chatcmpl-for-tests",
+      model: "gpt-5.6-luna",
+      choices: [
+        { index: 0, message: { role: "assistant", content: { script: script }.to_json }, finish_reason: "stop" }
+      ]
+    }.to_json
   end
 
   def signature_for(body)
