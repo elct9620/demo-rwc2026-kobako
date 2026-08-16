@@ -24,10 +24,14 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
   setup do
     @environment = ENV.to_h.slice(*CHANNEL_ENV.keys)
     ENV.update(CHANNEL_ENV)
-    # The key is read once at boot, so a test puts it where the app kept it
-    # rather than in the environment it was read from.
-    @api_key = RubyLLM.config.openai_api_key
+    # Both are read once at boot, so a test puts them where the app kept them
+    # rather than in the environment they were read from. The address is pinned
+    # to OpenAI's own because that is what the stub below answers: a gateway
+    # belongs to a deployment, and a machine that has one configured is not a
+    # machine whose tests should fail.
+    @writer_config = [ RubyLLM.config.openai_api_key, RubyLLM.config.openai_api_base ]
     RubyLLM.config.openai_api_key = "openai-api-key-for-tests"
+    RubyLLM.config.openai_api_base = nil
     @writer = stub_request(:post, WRITER_URL).to_return(
       status: 200,
       body: written(SCRIPT),
@@ -46,7 +50,7 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
   teardown do
     CHANNEL_ENV.each_key { |key| ENV.delete(key) }
     ENV.update(@environment)
-    RubyLLM.config.openai_api_key = @api_key
+    RubyLLM.config.openai_api_key, RubyLLM.config.openai_api_base = @writer_config
   end
 
   test "a message is answered with the card the sandbox assembled" do
