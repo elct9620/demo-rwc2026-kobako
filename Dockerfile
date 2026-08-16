@@ -4,7 +4,7 @@
 # This Dockerfile is designed for production, not development. What runs it is
 # the chart under charts/; by hand it is:
 # docker build -t dynamic_flex_message .
-# docker run -d -p 3000:3000 -e RAILS_MASTER_KEY=<value from config/master.key> --name dynamic_flex_message dynamic_flex_message
+# docker run -d -p 3000:3000 -e SECRET_KEY_BASE=<any long random string> --name dynamic_flex_message dynamic_flex_message
 
 # For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
 
@@ -52,7 +52,7 @@ COPY . .
 # -j 1 disable parallel compilation to avoid a QEMU bug: https://github.com/rails/bootsnap/issues/495
 RUN bundle exec bootsnap precompile -j 1 app/ lib/
 
-# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
+# Precompiling assets for production without requiring the real SECRET_KEY_BASE
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 
