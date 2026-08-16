@@ -5,11 +5,11 @@ image:
   tag: latest
   pullPolicy: Always
 
-# The Secret holding SECRET_KEY_BASE, LINE_CHANNEL_SECRET and
-# LINE_CHANNEL_ACCESS_TOKEN.
+# The Secret holding SECRET_KEY_BASE, the two LINE channel values, and the
+# OPENAI_API_KEY and OPENAI_API_BASE the layout is written through.
 #
 # No default, because every failure it causes is invisible: without the first
-# the app does not boot, and without the other two it boots, answers the health
+# the app does not boot, and without the rest it boots, answers the health
 # check, and fails only when LINE delivers something. An install that stops
 # here is the one failure anyone sees in time.
 secretName: ""

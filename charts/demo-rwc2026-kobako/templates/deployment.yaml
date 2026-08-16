@@ -57,6 +57,19 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.secretName }}
                   key: LINE_CHANNEL_ACCESS_TOKEN
+            # Named here rather than defaulted, so a Secret missing either one
+            # stops the Pod instead of letting it answer every message with a
+            # layout it could not write.
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretName }}
+                  key: OPENAI_API_KEY
+            - name: OPENAI_API_BASE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretName }}
+                  key: OPENAI_API_BASE
           # /up answers 200 once the app boots, which is the whole of what this
           # Pod can be asked: a sandbox run that fails comes back as a message,
           # not as an unhealthy process.
