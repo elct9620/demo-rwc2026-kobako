@@ -68,14 +68,20 @@ On stage it runs on k3s. The chart creates one Pod, one SQLite volume and one
 internal address; a Cloudflare Tunnel is what puts that address on the public
 HTTPS URL LINE delivers to.
 
+Everything goes in a namespace of its own, so the whole demo is one thing to
+put up and one thing to take down. The namespace and the Secret come first:
+the chart names no default for the Secret, and a Pod cannot start without it.
+
 ```bash
-kubectl create secret generic demo-line \
+kubectl create namespace rwc2026-demo
+
+kubectl -n rwc2026-demo create secret generic demo-line \
   --from-literal=SECRET_KEY_BASE="$(bin/rails secret)" \
   --from-literal=LINE_CHANNEL_SECRET=... \
   --from-literal=LINE_CHANNEL_ACCESS_TOKEN=...
 
 helm upgrade -i demo oci://ghcr.io/elct9620/demo-rwc2026-kobako \
-  --version 0.1.0 --set secretName=demo-line
+  --version 0.1.0 -n rwc2026-demo --set secretName=demo-line
 ```
 
 `SECRET_KEY_BASE` has to stay put: changing it invalidates everything already
@@ -85,8 +91,18 @@ The two layers move separately, and each has its own way of moving:
 
 | Changed | Published as | Picked up by |
 | --- | --- | --- |
-| The app | `ghcr.io/elct9620/demo-rwc2026-kobako/app:latest` | `kubectl rollout restart deployment/demo` |
-| The chart | `oci://ghcr.io/elct9620/demo-rwc2026-kobako` | Bump `version` in `Chart.yaml`, then `helm upgrade --version` |
+| The app | `ghcr.io/elct9620/demo-rwc2026-kobako/app:latest` | `kubectl -n rwc2026-demo rollout restart deployment/demo` |
+| The chart | `oci://ghcr.io/elct9620/demo-rwc2026-kobako` | Bump `version` in `Chart.yaml`, then `helm upgrade -n rwc2026-demo --version` |
 
 The claim stays `Pending` until the Pod is scheduled — that is `local-path`
 binding the volume to a node, not a failure.
+
+## Taking it down
+
+```bash
+kubectl delete namespace rwc2026-demo
+```
+
+That is the whole of it: the Pod, the Secret, and the claim. The claim going
+is what takes the SQLite files with it, because `local-path` reclaims the
+directory it made on the node rather than keeping it.
