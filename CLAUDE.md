@@ -19,7 +19,7 @@ prefer deleting a step over generalising it.
 
 Modern Rails "no-Redis" defaults — everything is SQLite: four databases
 (primary/cache/queue/cable) backed by `solid_cache` / `solid_queue` /
-`solid_cable`; Puma behind Thruster. The Web UI is server-rendered HTML with
+`solid_cable`; Puma answers directly. The Web UI is server-rendered HTML with
 Hotwire, served by Propshaft; JavaScript ships through **importmap** — there is
 no Node toolchain, so no bundler, no CSS framework build step.
 
