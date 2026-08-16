@@ -10,7 +10,7 @@
 # It spends a real request. The credentials never reach the output — a failure
 # is reported by class and message with both of them redacted.
 
-QUESTION = ENV.fetch("QUESTION", "台北有哪些 Ruby 聚會？")
+QUESTION = ENV.fetch("QUESTION", "Ruby Taiwan 辦過哪些活動？")
 
 def redact(text)
   [ ENV["OPENAI_API_KEY"], ENV["OPENAI_API_BASE"] ]
