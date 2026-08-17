@@ -5,8 +5,9 @@ image:
   tag: latest
   pullPolicy: Always
 
-# The Secret holding SECRET_KEY_BASE, the two LINE channel values, and the
-# OPENAI_API_KEY and OPENAI_API_BASE the layout is written through.
+# The Secret holding SECRET_KEY_BASE, the two LINE channel values, the
+# OPENAI_API_KEY and OPENAI_API_BASE the layout is written through, and the
+# Facebook page the daily fetch reads.
 #
 # No default, because every failure it causes is invisible: without the first
 # the app does not boot, and without the rest it boots, answers the health

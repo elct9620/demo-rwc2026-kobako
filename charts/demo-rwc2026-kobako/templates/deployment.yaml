@@ -70,6 +70,20 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.secretName }}
                   key: OPENAI_API_BASE
+            # The page the daily fetch reads, and what authorises reading it.
+            # Named for the same reason as the rest: the fetch runs at five in
+            # the morning with nobody watching, and a missing key there would
+            # only show up as a table that never grew.
+            - name: FB_PAGE_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretName }}
+                  key: FB_PAGE_ID
+            - name: FB_PAGE_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretName }}
+                  key: FB_PAGE_TOKEN
           # /up answers 200 once the app boots, which is the whole of what this
           # Pod can be asked: a sandbox run that fails comes back as a message,
           # not as an unhealthy process.
