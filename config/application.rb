@@ -26,7 +26,13 @@ module DynamicFlexMessage
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
     #
-    # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # The community this answers about is in Taipei, and so is every event time
+    # the feeds carry. Left at UTC, "today" turns over eight hours late — an
+    # event on tonight's calendar would be read as tomorrow's for the whole of a
+    # Taipei morning. Rows are still stored in UTC; this is the zone they are
+    # read and reasoned about in.
+    config.time_zone = "Asia/Taipei"
   end
 end
