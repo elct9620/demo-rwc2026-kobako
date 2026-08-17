@@ -10,6 +10,8 @@ LINE ──▶ POST /webhook ──▶ signature ──▶ enqueue ──▶ 200
                                             │
                      loading animation, then FlexMessageAgent
                                             │
+                 search_entries, upcoming_events ──▶ entries
+                                            │
                                   Kobako (wasm sandbox)  ◀── layout_check
                                             │
                         line-message-builder, held on the host
@@ -37,7 +39,15 @@ check *rejects* — a delivery it cannot verify never gets parsed. The sandbox
 ## What it answers from
 
 A bot with nothing held answers from whatever the model remembers, which for a
-local community is nothing. So three feeds fill one table, once a day:
+local community is nothing. So three feeds fill one table, once a day, and the
+writer reaches it through two tools rather than being handed the table:
+`search_entries` for a keyword, narrowed by source or by date, and
+`upcoming_events` for what has not happened yet — which is a comparison against
+now that no keyword could ask for.
+
+A card names an event but does not link to it. The Flex DSL lends two actions,
+`message` and `postback`, and neither opens a URL — so a link on a card would
+be a string nobody can tap, and the tools do not return one.
 
 | Source | What it carries |
 | --- | --- |
@@ -68,19 +78,25 @@ rows and leaves the other two alone.
 | --- | --- |
 | `app/sandbox/line_flex.rb` | The boundary. `VERBS` is the whole vocabulary a script may speak |
 | `app/jobs/fetch_*_entries_job.rb` | The three sources, one job each |
-| `app/models/entry.rb` | What a fetched row is, and the three names a source may have |
+| `app/models/entry.rb` | What a fetched row is, how it is searched, and what the writer is told about it |
 | `config/recurring.yml` | When each source is read, in the zone it says |
 | `app/controllers/webhooks_controller.rb` | Where a delivery arrives and is verified |
 | `app/jobs/answer_message_job.rb` | Where the card is built and the reply leaves |
+| `app/tools/` | The three things the writer may ask for: two into the table, one into the sandbox |
 | `app/agents/flex_message_agent.rb` | Who writes the script, and what it is allowed to answer with |
-| `app/prompts/flex_message_agent/` | The brief, which interpolates `VERBS` rather than restating it |
+| `app/prompts/flex_message_agent/` | The brief: what it answers, how it behaves, what it has, what to do when it fails |
 | `charts/demo-rwc2026-kobako/` | What k3s is asked for, with the reason beside each value |
 
-The vocabulary is one contract in two directions: the ceiling the sandbox
-enforces, and the list the writer is given to aim at. The brief interpolates it
-so the two cannot drift, and a test fails if a verb reaches one and not the
-other. What each verb takes is not written down yet — the brief carries one
-worked example instead.
+Nothing in the brief is restated from the code. The vocabulary is one contract
+in two directions — the ceiling the sandbox enforces and the list the writer
+aims at — and the same holds for the tools' names, the carousel's ceiling and
+today's date. A test fails if any of them reaches one side and not the other,
+and another runs every card the brief shows through the sandbox, because an
+example the sandbox would stop is a lesson in how to fail.
+
+Twelve is where several of those meet: a carousel holds twelve bubbles, so it
+is also every entry one answer could show, and therefore every entry a tool is
+worth returning.
 
 Each message opens its own chat, and the chat is kept: what was asked and what
 was answered land in the SQLite database beside everything else, which is one

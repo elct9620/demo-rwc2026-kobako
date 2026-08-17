@@ -19,6 +19,13 @@ class FlexMessageAgentTest < ActiveSupport::TestCase
     FlexMessageAgent.tools.each { |tool| assert_includes @instructions, tool.new.name }
   end
 
+  # Twelve is the builder's ceiling on a carousel, so it is also the most a
+  # single answer can show. A writer told a larger number would lay out entries
+  # the sandbox then refuses to assemble.
+  test "the writer is told how many bubbles one answer holds" do
+    assert_includes @instructions, LineFlex::MAX_BUBBLES.to_s
+  end
+
   # The model's own sense of the date is whenever it was trained. Every
   # question about what is coming up is answered against this line instead.
   test "the writer is told what day it is where the community is" do
