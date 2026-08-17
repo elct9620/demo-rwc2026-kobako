@@ -63,8 +63,9 @@ end
 # - a `:baseline` box sits its children on one shared baseline and holds
 #   `text` and nothing else. An `image` or another `box` inside one is
 #   refused; a thumbnail beside a title is a `:horizontal` box
-# - one `bubble` is at most 10 KB of JSON and a whole `carousel` at most
-#   50 KB. Twelve rows of image and text come to about 7 KB, so a long list
-#   runs out of room before it runs out of rows
+# - a bubble is measured as JSON and refused past 10 KB, which is not
+#   something you can see. Count lines instead: a dozen rows of thumbnail and
+#   title come to about two thirds of it, so a bubble holds a handful of lines
+#   rather than a table
 # - `header`, `hero`, `body` and `footer` appear at most once each in a bubble
 ```
