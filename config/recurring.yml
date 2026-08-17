@@ -13,3 +13,19 @@ production:
   clear_solid_queue_finished_jobs:
     command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
     schedule: every hour at minute 12
+
+  # One task per source rather than one that fetches all three: nothing here is
+  # retried and a failure only reaches the log, so a source having a bad day
+  # should cost its own rows and leave the other two alone.
+  #
+  # Each schedule names its zone. A bare "5am" is read as UTC, which is the
+  # middle of the afternoon where this demo is given.
+  fetch_kktix_entries:
+    class: FetchKktixEntriesJob
+    schedule: every day at 5am Asia/Taipei
+  fetch_youtube_entries:
+    class: FetchYoutubeEntriesJob
+    schedule: every day at 5am Asia/Taipei
+  fetch_facebook_entries:
+    class: FetchFacebookEntriesJob
+    schedule: every day at 5am Asia/Taipei
