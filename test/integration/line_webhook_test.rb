@@ -10,6 +10,7 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
   LOADING_URL = "https://api.line.me/v2/bot/chat/loading/start"
   WRITER_URL = "https://api.openai.com/v1/chat/completions"
   USER_ID = "Udeadbeefdeadbeefdeadbeefdeadbeef"
+  JSON_TYPE = { "Content-Type" => "application/json" }.freeze
   SCRIPT = <<~MRUBY
     Flex.with do
       alt_text "Brown Cafe"
@@ -35,12 +36,12 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
     @writer = stub_request(:post, WRITER_URL).to_return(
       status: 200,
       body: written(SCRIPT),
-      headers: { "Content-Type" => "application/json" }
+      headers: JSON_TYPE
     )
     @reply = stub_request(:post, REPLY_URL).to_return(
       status: 200,
       body: { sentMessages: [ { id: "461230966842064897", quoteToken: "IStG5h1Tz7b..." } ] }.to_json,
-      headers: { "Content-Type" => "application/json" }
+      headers: JSON_TYPE
     )
     @loading = stub_request(:post, LOADING_URL).to_return(status: 202)
   end
@@ -51,6 +52,27 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
     CHANNEL_ENV.each_key { |key| ENV.delete(key) }
     ENV.update(@environment)
     RubyLLM.config.openai_api_key, RubyLLM.config.openai_api_base = @writer_config
+  end
+
+  # The whole of the wiring, walked once: the writer asks for entries, the app
+  # runs the query against the table, and what comes back travels into the next
+  # request. Asserting on that second request is what proves the card is
+  # written from the community's own posts rather than from what a model
+  # remembers.
+  test "an answer is written from what the tool read out of the table" do
+    meetup = entries(:august_meetup)
+    stub_request(:post, WRITER_URL).to_return(
+      { status: 200, body: asked_for(:search_entries, query: "小聚"), headers: JSON_TYPE },
+      { status: 200, body: written(card_naming(meetup.title)), headers: JSON_TYPE }
+    )
+
+    deliver(text_event(text: "最近有什麼小聚"))
+
+    assert_requested :post, WRITER_URL, times: 2
+    assert_requested(:post, WRITER_URL) { |request| request.body.include?(meetup.title) }
+    assert_requested(:post, REPLY_URL) do |request|
+      JSON.parse(request.body)["messages"].first["altText"] == meetup.title
+    end
   end
 
   test "a message is answered with the card the sandbox assembled" do
@@ -71,7 +93,7 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
     stub_request(:post, WRITER_URL).to_return(
       status: 401,
       body: { success: false, error: [ { code: 2009, message: "Unauthorized" } ], name: "AiGatewayError" }.to_json,
-      headers: { "Content-Type" => "application/json" }
+      headers: JSON_TYPE
     )
 
     deliver(text_event)
@@ -159,6 +181,46 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
     perform_enqueued_jobs { post "/webhook", params: body, headers: headers }
   end
 
+  # An assistant turn that calls a tool instead of answering. What the writer
+  # asks for is its own decision in production, so a test that wants the loop
+  # walked has to make that decision for it.
+  def asked_for(tool, **arguments)
+    {
+      id: "chatcmpl-for-tests",
+      model: "gpt-5-mini",
+      choices: [
+        {
+          index: 0,
+          message: {
+            role: "assistant",
+            content: nil,
+            tool_calls: [
+              {
+                id: "call-for-tests",
+                type: "function",
+                function: { name: tool.to_s, arguments: arguments.to_json }
+              }
+            ]
+          },
+          finish_reason: "tool_calls"
+        }
+      ]
+    }.to_json
+  end
+
+  def card_naming(title)
+    <<~MRUBY
+      Flex.with do
+        alt_text "#{title}"
+        bubble do
+          body layout: :vertical do
+            text "#{title}", wrap: true
+          end
+        end
+      end
+    MRUBY
+  end
+
   # A schema is in force, so the fields come back as JSON inside the
   # assistant's message rather than as prose around it.
   def written(script)
@@ -179,7 +241,7 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
     text_event(source: { type: "group", groupId: "Cdeadbeefdeadbeefdeadbeefdeadbeef", userId: USER_ID })
   end
 
-  def text_event(source: { type: "user", userId: USER_ID })
+  def text_event(source: { type: "user", userId: USER_ID }, text: "cafe")
     {
       destination: USER_ID,
       events: [
@@ -194,7 +256,7 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
           message: {
             type: "text",
             id: "14353798921116",
-            text: "cafe",
+            text: text,
             quoteToken: "q3Plxr4AgKd...4qtSf9scFUsdBdXQ"
           }
         }
