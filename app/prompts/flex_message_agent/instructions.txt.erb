@@ -57,16 +57,14 @@ Call it before writing anything.
 
 ## Laying it out
 
-These names, and no others, are lent to the script:
+This is what the script may speak, and the whole of it:
 
-<%= LineFlex::VERBS.join(", ") %>
+<%= FlexMessageAgent.render_prompt("vocabulary", chat: nil, inputs: {}, locals: {}) %>
 
-They are line-message-builder's Flex DSL and take that DSL's keyword arguments.
-Anything else — a constant, a require, arithmetic on the host, a name you
-remember from Ruby — is not there and the run will be stopped.
+Anything outside it — a constant, a require, arithmetic on the host, a name
+you remember from Ruby — is not there and the run will be stopped.
 
-The script opens with `Flex.with do ... end`. Verbs that contain other things
-take a block; the ones that do not take their content as the first argument.
+The script opens with `Flex.with do ... end`.
 
 How many `bubble`s an answer takes is a decision about the answer, not about
 how many rows came back — one bubble often speaks for several of them, and
@@ -87,20 +85,28 @@ Flex.with do
         text "9/20 19:00 台北", wrap: true, color: "#666666", size: :sm, flex: 5
       end
     end
+    footer layout: :vertical do
+      button style: :link do
+        message "九月場", label: "這場在講什麼"
+      end
+    end
   end
 end
 ```
 
-Four things to get right, the first three of which nothing will warn you about:
+Three things to get right, none of which anything will warn you about:
 
-- **Bold lives on `span`, not on `text`.** `text "…", weight: :bold` is
-  accepted, ignored, and rendered plain. Wrap it: `text do span "…",
-  weight: :bold end`.
+- **A keyword no signature names is dropped in silence.** The sandbox runs,
+  the check passes, LINE shows the card — and the one thing you asked for is
+  not on it. Read the signature rather than reaching for the keyword you
+  remember.
 - **Long text cannot be shortened by the card.** Write two lines of your own
   rather than pasting a summary; a card is read at a glance.
-- **`alt_text` is what a notification shows**, so every card needs one.
-- **A `button` must carry an action**, and the only two are `message` and
-  `postback`. There is no way to open a link, so never put a URL on a card.
+- **`alt_text` is what a notification shows**, so every card needs one, and it
+  says what the answer is rather than repeating the question.
+
+A tap cannot open a link, so never put a URL on a card — as a button, or as
+text for someone to copy.
 
 `thumbnail_url` is the only image a tool ever returns, and only recordings have
 one. A card without it simply has no hero.

@@ -1,0 +1,57 @@
+```rbs
+# The whole of the Flex DSL the sandbox lends, and the whole of what it lends
+# it as. A verb exists only where a type below declares it — `footer` is a
+# Bubble's and not a Box's — and a keyword absent from a signature is dropped
+# without a word rather than refused.
+#
+# Every block is run against the type in its `[self: ...]` binding: that type
+# is what the verbs written inside the block are read from.
+
+module Flex
+  def self.with: () { () [self: Builder] -> void } -> void
+end
+
+class Builder
+  def alt_text: (String) -> void
+  def bubble: (?size: Symbol) { () [self: Bubble] -> void } -> void
+  def carousel: () { () [self: Carousel] -> void } -> void
+end
+
+class Carousel
+  # At most <%= LineFlex::MAX_BUBBLES %>; the builder refuses the next one.
+  def bubble: (?size: Symbol) { () [self: Bubble] -> void } -> void
+end
+
+# A card's four sections, each a Bubble's alone. The hero is filled either as
+# a Box or, with `hero_image`, as the one image on its own.
+class Bubble
+  def header: (?layout: Symbol, ?spacing: Symbol, ?margin: Symbol) { () [self: Box] -> void } -> void
+  def hero: (?layout: Symbol, ?spacing: Symbol, ?margin: Symbol) { () [self: Box] -> void } -> void
+  def hero_image: (String url, ?size: Symbol, ?aspect_ratio: String, ?aspect_mode: Symbol) -> void
+  def body: (?layout: Symbol, ?spacing: Symbol, ?margin: Symbol) { () [self: Box] -> void } -> void
+  def footer: (?layout: Symbol, ?spacing: Symbol, ?margin: Symbol) { () [self: Box] -> void } -> void
+end
+
+# What goes inside a section. `layout` is :vertical, :horizontal or :baseline.
+class Box
+  def box: (?layout: Symbol, ?spacing: Symbol, ?margin: Symbol, ?flex: Integer) { () [self: Box] -> void } -> void
+  def text: (?String text, ?wrap: bool, ?size: Symbol, ?color: String, ?align: Symbol, ?margin: Symbol, ?flex: Integer) ?{ () [self: Text] -> void } -> void
+  def button: (?style: Symbol, ?height: Symbol, ?margin: Symbol, ?flex: Integer) { () [self: Button] -> void } -> void
+  def image: (String url, ?size: Symbol, ?aspect_ratio: String, ?aspect_mode: Symbol, ?margin: Symbol) -> void
+  # Takes nothing: the builder spells a separator as its type and no more.
+  def separator: () -> void
+end
+
+# Note what is missing: `weight` is a Span's, so bold is written as a `text`
+# with a block of spans rather than as a keyword on the text itself.
+class Text
+  def span: (String, ?size: Symbol, ?color: String, ?weight: Symbol, ?decoration: Symbol) -> void
+end
+
+# A button is empty without one of these, and these two are the whole of what
+# a tap can do — neither opens a link.
+class Button
+  def message: (String text, ?label: String) -> void
+  def postback: (String data, ?label: String, ?display_text: String) -> void
+end
+```

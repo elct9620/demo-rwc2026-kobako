@@ -3,13 +3,22 @@ require "test_helper"
 class FlexMessageAgentTest < ActiveSupport::TestCase
   setup do
     @instructions = FlexMessageAgent.render_prompt("instructions", chat: nil, inputs: {}, locals: {})
+    @vocabulary = FlexMessageAgent.render_prompt("vocabulary", chat: nil, inputs: {}, locals: {})
   end
 
   # The vocabulary is one contract in two directions: the ceiling the sandbox
-  # enforces, and the list the writer is given to aim at. A verb that lands in
-  # one and not the other is the drift this catches.
-  test "the writer is given every verb the sandbox lends" do
-    LineFlex::VERBS.each { |verb| assert_includes @instructions, verb.to_s }
+  # enforces, and what the writer is given to aim at. A verb that lands in one
+  # and not the other is the drift this catches — and it is the signature that
+  # is looked for, because a name the writer cannot tell how to call is a name
+  # it will call the way it remembers.
+  test "the writer is given a signature for every verb the sandbox lends" do
+    LineFlex::VERBS.each { |verb| assert_match(/^\s*def (self\.)?#{verb}:/, @vocabulary, verb.to_s) }
+  end
+
+  # The brief hands the contract over rather than restating it, so there is one
+  # place a verb is described and no second one to fall out of step.
+  test "the brief hands over the whole vocabulary" do
+    assert_includes @instructions, @vocabulary.strip
   end
 
   # A tool's name is derived from its class, and the brief calls it by that
