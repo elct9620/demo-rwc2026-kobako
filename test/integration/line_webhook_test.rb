@@ -163,7 +163,7 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
       headers: JSON_TYPE
     )
 
-    log = capture_job_log { deliver(text_event) }
+    log = capture_log { deliver(text_event) }
 
     assert_match "400", log
     assert_match "may not be used in a baseline box", log
@@ -188,16 +188,17 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
 
   private
 
-  # The job writes where Active Job writes, so the log is read from there
-  # rather than from a file the test would have to find.
-  def capture_job_log
+  # Rails.logger is a BroadcastLogger, so a test reads the log by asking it to
+  # write to one more place rather than by standing in for it — nothing is
+  # replaced, and what the app logs is what is read.
+  def capture_log
     written = StringIO.new
-    kept = ActiveJob::Base.logger
-    ActiveJob::Base.logger = ActiveSupport::Logger.new(written)
+    sink = ActiveSupport::Logger.new(written)
+    Rails.logger.broadcast_to(sink)
     yield
     written.string
   ensure
-    ActiveJob::Base.logger = kept
+    Rails.logger.stop_broadcasting_to(sink)
   end
 
   # The content type is what LINE sends, so a delivery here carries it too.
