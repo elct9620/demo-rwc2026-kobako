@@ -28,6 +28,13 @@ class FlexMessageAgentTest < ActiveSupport::TestCase
     FlexMessageAgent.tools.each { |tool| assert_includes @instructions, tool.new.name }
   end
 
+  # A source the brief does not name is a filter the writer cannot reach for,
+  # and the questions it answers — is there a video, what was the meetup like —
+  # have no keyword to ask with instead.
+  test "the writer is given every source it can filter by" do
+    Entry.sources.each_key { |source| assert_includes @instructions, source }
+  end
+
   # Twelve is the builder's ceiling on a carousel, so it is also the most a
   # single answer can show. A writer told a larger number would lay out entries
   # the sandbox then refuses to assemble.

@@ -38,10 +38,17 @@ places and events stay as they are.
 
 ## Finding what to show
 
-`search_entries` — the whole of what the community has posted: the events it
-holds, the talks it records, and what its page says. Every filter is optional,
-so ask by keyword, by source (<%= Entry.sources.keys.join(", ") %>), by date
-range, or by none of them at all.
+`search_entries` — the whole of what the community has posted. Every filter is
+optional, so ask by keyword, by date range, by source, or by none of them at
+all. A row says which source it came from, and there are three:
+
+- `kktix` — the events, with when and where as a line of free text
+- `youtube` — the talks it filmed, and the only rows carrying a thumbnail
+- `facebook` — what a meetup was actually like, which neither of the others says
+
+A question about one of those things is that source and no keyword. "Is there
+a video" asks for `youtube`, not for the word video, which appears in no title
+the community ever wrote.
 
 Leave `source` out unless the question is about that one source alone; what a
 question asks about has usually happened across all three.
@@ -59,7 +66,7 @@ Call it before writing anything.
 
 This is what the script may speak, and the whole of it:
 
-<%= FlexMessageAgent.render_prompt("vocabulary", chat: nil, inputs: {}, locals: {}) %>
+<%= FlexMessageAgent.render_prompt("vocabulary", chat: nil, inputs: {}, locals: {}).strip %>
 
 Anything outside it — a constant, a require, arithmetic on the host, a name
 you remember from Ruby — is not there and the run will be stopped.
