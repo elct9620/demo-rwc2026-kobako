@@ -24,10 +24,15 @@ RubyLLM.configure do |config|
   # API — which ruby_llm does not speak yet.
   config.default_model = ENV.fetch("OPENAI_MODEL", "gpt-5-mini")
 
-  # A reply token expires about a minute after the webhook, and the job holding
-  # it is not retried. RubyLLM would rather wait five minutes and try three
-  # times, which is a card that arrives after the only thing that could deliver
-  # it is gone.
-  config.request_timeout = 20
+  # Sized for the writing rather than for the reply token. An answer is three
+  # calls now — choose the tools, lay out what they returned, check it — and a
+  # cap that fits the whole exchange into one of them cuts off the middle call,
+  # which is the one that does the work. LINE says to reply as soon as possible
+  # and that beyond a minute is not guaranteed; that is a limit to answer to
+  # where the reply leaves, not one to enforce by refusing to finish thinking.
+  config.request_timeout = 120
+
+  # One retry, for a gateway having a moment. A second would only repeat a slow
+  # call at its new length.
   config.max_retries = 1
 end

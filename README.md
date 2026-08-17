@@ -21,9 +21,18 @@ LINE ──▶ POST /webhook ──▶ signature ──▶ enqueue ──▶ 200
 
 The webhook is answered before the card exists. An LLM writes the layout, which
 takes as long as it takes, and none of that is time LINE waits on — so the
-sender is shown a loading animation instead. A reply token is spent once and
-expires about a minute after the webhook, which is why a job that fails is not
-retried and why every clock on this path is set well inside that minute.
+sender is shown a loading animation instead. A reply token is spent once, which
+is why a job that fails is not retried: a second attempt would answer with a
+token LINE has already refused.
+
+How long that token lasts is the one number this path does not set its clocks
+by. LINE documents a minute, says to reply as soon as possible, and says in the
+same breath not to rely on the limit — beyond a minute is *not guaranteed*
+rather than *refused*, and in practice the window is wider than the number.
+Writing an answer is three calls to the model and a sandbox run, so a clock cut
+to fit inside a minute cuts off the call that does the work. The clocks here
+are sized for the writing; the token is a thing to answer to where the reply
+leaves, not a budget to enforce by refusing to finish thinking.
 
 The script is untrusted, and being written by an LLM changes nothing about
 that: it never reaches the host's memory, files, network or credentials — the

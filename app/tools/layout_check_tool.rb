@@ -3,9 +3,10 @@
 # is handed the same boundary the app will run it behind — and what comes back
 # is the failure translated into something it can act on, not a stack trace.
 class LayoutCheckTool < RubyLLM::Tool
-  # Two goes at fixing what the sandbox reports. Each one spends a round trip
-  # and a sandbox run, and the reply token waiting at the end of all this
-  # expires about a minute after the message, so this ceiling is a deadline.
+  # Two goes at fixing what the sandbox reports. The sandbox names one fault at
+  # a time, so a writer that is converging needs one more look; a writer that is
+  # guessing is not helped by a third, and someone is waiting through every one
+  # of them.
   ATTEMPTS = 2
 
   description <<~TEXT

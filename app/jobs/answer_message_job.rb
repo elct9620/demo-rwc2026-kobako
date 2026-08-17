@@ -2,9 +2,9 @@
 # running it takes as long as it takes, so it happens here rather than in the
 # request LINE is waiting on.
 #
-# Nothing is retried. A reply token is spent once and expires about a minute
-# after the webhook, so a second attempt would answer with a token LINE has
-# already refused — a run that failed has nothing left to reply with.
+# Nothing is retried. A reply token is spent once, so a second attempt would
+# answer with a token LINE has already refused — a run that failed has nothing
+# left to reply with.
 class AnswerMessageJob < ApplicationJob
   # A reply token authorises one message to one person, and the text beside it
   # is what that person wrote. Active Job prints a job's arguments verbatim and
@@ -12,10 +12,11 @@ class AnswerMessageJob < ApplicationJob
   # entirely rather than travelling to wherever it is read.
   self.log_arguments = false
 
-  # Long enough to cover the writing, which is the part that takes seconds.
-  # LINE accepts 5 to 60, the animation clears the moment the reply arrives,
-  # and a wait it stops covering is one the sender spends watching nothing.
-  LOADING_SECONDS = 20
+  # The most LINE accepts. Three calls to the writer and a sandbox run take
+  # most of a minute between them, and the animation clears the moment the
+  # reply arrives — so the only thing a smaller number buys is a stretch at the
+  # end the sender spends watching nothing.
+  LOADING_SECONDS = 60
 
   # +text+ is what the message asked for, and it is what the layout is written
   # from. It travels with the token so that arrival needs no second look at the
