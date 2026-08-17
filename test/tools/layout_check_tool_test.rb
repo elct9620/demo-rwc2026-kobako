@@ -27,6 +27,24 @@ class LayoutCheckToolTest < ActiveSupport::TestCase
     LineFlex::VERBS.each { |verb| assert_includes answer, verb.to_s }
   end
 
+  # A limit the builder enforces is not a vocabulary mistake. Reported as one,
+  # the writer would be handed the verb list and sent looking for a name it
+  # never got wrong.
+  test "a limit the builder enforces is reported in the builder's own words" do
+    bubbles = Array.new(LineFlex::MAX_BUBBLES + 1) { |index| %(bubble { body(layout: :vertical) { text "#{index}" } }) }
+    answer = LayoutCheckTool.new.execute(script: <<~MRUBY)
+      Flex.with do
+        alt_text "Sessions"
+        carousel do
+          #{bubbles.join("\n    ")}
+        end
+      end
+    MRUBY
+
+    assert_match(/12/, answer)
+    assert_not_includes answer, "does not lend"
+  end
+
   test "a script that never returns is told what it may not do" do
     answer = LayoutCheckTool.new.execute(script: "while true; end")
 

@@ -46,4 +46,60 @@ class LineFlexTest < ActiveSupport::TestCase
 
     assert_equal :timeout, result.reason
   end
+
+  # Carousel#bubble hands back the mutated contents Array rather than the child
+  # it made, which is the one case Node#method_missing reaches into. Several
+  # entries on one answer is what the verb is for, so this is the path that
+  # carries it.
+  # Read with the test below, this pair is what pins MAX_BUBBLES to what the
+  # builder actually does rather than to what it was believed to do: the last
+  # carousel it accepts, and the first it refuses.
+  test "a carousel of every bubble LINE holds crosses the boundary intact" do
+    message = LineFlex.render(carousel_of(LineFlex::MAX_BUBBLES))
+
+    assert_equal "carousel", message[:contents][:type]
+    assert_equal LineFlex::MAX_BUBBLES, message[:contents][:contents].size
+  end
+
+  # The builder's own limits are host exceptions raised inside a Service call.
+  # Whether it refuses a thirteenth bubble is its business; what belongs here is
+  # that its refusal arrives as a value, and as a different one from a name the
+  # sandbox does not lend — those two send the writer to fix different things.
+  test "a carousel past what LINE holds comes back as a value" do
+    result = LineFlex.render(carousel_of(LineFlex::MAX_BUBBLES + 1))
+
+    assert_instance_of LineFlex::Failure, result
+    assert_equal :service, result.reason
+  end
+
+  test "a button with nothing to do comes back as a value" do
+    result = LineFlex.render(<<~MRUBY)
+      Flex.with do
+        alt_text "Sessions"
+        bubble do
+          footer layout: :vertical do
+            button style: :link
+          end
+        end
+      end
+    MRUBY
+
+    assert_instance_of LineFlex::Failure, result
+    assert_equal :service, result.reason
+  end
+
+  private
+
+  def carousel_of(count)
+    bubbles = Array.new(count) { |index| %(bubble { body(layout: :vertical) { text "第 #{index} 場" } }) }
+
+    <<~MRUBY
+      Flex.with do
+        alt_text "Sessions"
+        carousel do
+          #{bubbles.join("\n    ")}
+        end
+      end
+    MRUBY
+  end
 end
