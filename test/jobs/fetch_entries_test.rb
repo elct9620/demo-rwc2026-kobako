@@ -78,17 +78,17 @@ class FetchEntriesTest < ActiveSupport::TestCase
       body: { error: { code: 190, error_subcode: 463, message: "Session has expired" } }.to_json
     )
 
-    assert_logged(/answered 400 .*Session has expired/) { FetchFacebookEntriesJob.perform_now }
-
-    assert_equal 0, Entry.count
+    assert_no_difference "Entry.count" do
+      assert_logged(/answered 400 .*Session has expired/) { FetchFacebookEntriesJob.perform_now }
+    end
   end
 
   test "a source that stops answering leaves the table as it was" do
     stub_request(:get, FetchYoutubeEntriesJob::FEED_URL).to_return(status: 503)
 
-    assert_nothing_raised { FetchYoutubeEntriesJob.perform_now }
-
-    assert_equal 0, Entry.count
+    assert_no_difference "Entry.count" do
+      assert_nothing_raised { FetchYoutubeEntriesJob.perform_now }
+    end
   end
 
   # The shape this round is built to notice: a source answers, so nothing looks
@@ -97,9 +97,9 @@ class FetchEntriesTest < ActiveSupport::TestCase
     stub_request(:get, FetchYoutubeEntriesJob::FEED_URL)
       .to_return(status: 200, body: "<html><body>Sign in to continue</body></html>")
 
-    assert_logged(/held no entries/) { FetchYoutubeEntriesJob.perform_now }
-
-    assert_equal 0, Entry.count
+    assert_no_difference "Entry.count" do
+      assert_logged(/held no entries/) { FetchYoutubeEntriesJob.perform_now }
+    end
   end
 
   private

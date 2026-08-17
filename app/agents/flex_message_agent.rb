@@ -16,7 +16,9 @@ class FlexMessageAgent < RubyLLM::Agent
   # app/prompts/flex_message_agent/instructions.txt.erb
   instructions
 
-  tools LayoutCheckTool
+  # In the order they are reached for: find what the community actually posted,
+  # then check the layout written from it.
+  tools SearchEntriesTool, UpcomingEventsTool, LayoutCheckTool
 
   # Wanting this alongside the tool is what pins the model to an older
   # generation; the initializer says why.

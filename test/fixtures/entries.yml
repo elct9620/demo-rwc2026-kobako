@@ -1,0 +1,40 @@
+# The three sources as they actually arrive: only Facebook has no title, only
+# YouTube has a thumbnail worth keeping, only KKTIX has a schedule. A test that
+# reads across the lot needs all three shapes present.
+#
+# The dates are relative because "upcoming" is a comparison against now — fixed
+# ones would quietly stop being upcoming a few weeks after they were written.
+
+august_meetup:
+  source: kktix
+  external_id: "tag:rubytaiwan.kktix.cc,2005:Event/900001"
+  title: "Ruby Taiwan 八月小聚"
+  summary: "一起聊聊 Ruby 3.4 與 mruby 的近況"
+  url: "https://rubytaiwan.kktix.cc/events/august-meetup"
+  published_at: <%= 3.days.from_now.to_fs(:db) %>
+  metadata: { "schedule": "2026/08/20 19:00 台北市中正區八德路" }
+
+spring_conference:
+  source: kktix
+  external_id: "tag:rubytaiwan.kktix.cc,2005:Event/900002"
+  title: "RubyConf Taiwan 春季場"
+  summary: "年度研討會，兩天議程"
+  url: "https://rubytaiwan.kktix.cc/events/spring-conference"
+  published_at: <%= 60.days.ago.to_fs(:db) %>
+  metadata: { "schedule": "2026/06/18 09:00 台北文創大樓" }
+
+sandbox_talk:
+  source: youtube
+  external_id: "dQw4w9WgXcQ"
+  title: "在 WASM 沙箱裡跑 mruby"
+  summary: "從 Kobako 談不受信任程式碼的邊界"
+  url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+  thumbnail_url: "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg"
+  published_at: <%= 30.days.ago.to_fs(:db) %>
+
+meetup_recap:
+  source: facebook
+  external_id: "166417243936_900000000000001"
+  summary: "七月小聚的現場，謝謝每一位講者與到場的大家"
+  url: "https://www.facebook.com/166417243936/posts/1477619374393392"
+  published_at: <%= 45.days.ago.to_fs(:db) %>

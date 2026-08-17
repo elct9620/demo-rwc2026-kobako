@@ -7,4 +7,33 @@ class Entry < ApplicationRecord
   # unique index is scoped by it, so a name absent here is a row nothing can
   # find again.
   enum :source, { kktix: "kktix", youtube: "youtube", facebook: "facebook" }
+
+  # A search runs over both columns because a card is written from both: a
+  # Facebook post has no title at all, and a KKTIX event says what it is about
+  # only in its summary.
+  scope :matching, ->(text) {
+    where("title LIKE :text OR summary LIKE :text", text: "%#{sanitize_sql_like(text.to_s)}%")
+  }
+
+  # KKTIX's published_at is when the event starts, so a row still ahead of now
+  # is one someone can still turn up to. The other two sources only ever look
+  # backwards, which is why this needs no source of its own.
+  scope :upcoming, -> { where(published_at: Time.current..).order(:published_at) }
+
+  # What the writer is told about an entry. The link is left out on purpose:
+  # the Flex DSL lends no uri action, so a URL on a card is a string nobody can
+  # tap. Empty fields are dropped rather than sent as null — a source that
+  # cannot fill a column has nothing to say about it.
+  def as_json(*)
+    {
+      source: source,
+      title: title,
+      summary: summary,
+      # Where and when to turn up exists only as this line of free text, and
+      # only on KKTIX.
+      schedule: metadata["schedule"],
+      published_at: published_at.iso8601,
+      thumbnail_url: thumbnail_url
+    }.compact
+  end
 end

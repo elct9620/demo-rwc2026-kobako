@@ -18,6 +18,11 @@ module LineFlex
   # stays out of the vocabulary while still being a call the guest may make.
   CALLABLE = (VERBS + %i[to_h]).freeze
 
+  # A carousel holds twelve bubbles and the builder refuses the thirteenth. It
+  # is therefore the ceiling on how much one answer can show, which makes it
+  # the ceiling on how much the writer is worth handing to choose from.
+  MAX_BUBBLES = 12
+
   # A layout script is arithmetic and string building; a card measures around
   # 128 KiB of guest memory and a millisecond of wall clock. The gem's memory
   # default already sits an order of magnitude above that, but its 60 second
