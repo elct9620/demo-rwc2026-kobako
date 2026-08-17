@@ -26,7 +26,7 @@ begin
   puts script
   puts
   puts "model:   #{chat.model_id}"
-  puts "checked: #{chat.messages.flat_map { |message| message.tool_calls.map(&:name) }.tally}"
+  puts "tools:   #{chat.messages.flat_map { |message| message.tool_calls.map(&:name) }.tally}"
   puts "card:    #{card.is_a?(LineFlex::Failure) ? "not built — #{card.reason}: #{card.message}" : "#{card[:type]} / #{card[:alt_text]}"}"
 rescue StandardError => e
   abort "failed: #{e.class}: #{redact(e.message)}"

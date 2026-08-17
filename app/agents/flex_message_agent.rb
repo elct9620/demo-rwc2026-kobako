@@ -20,7 +20,7 @@ class FlexMessageAgent < RubyLLM::Agent
   # then check the layout written from it.
   tools SearchEntriesTool, UpcomingEventsTool, LayoutCheckTool
 
-  # Wanting this alongside the tool is what pins the model to an older
+  # Wanting this alongside the tools is what pins the model to an older
   # generation; the initializer says why.
   thinking effort: "medium"
 
