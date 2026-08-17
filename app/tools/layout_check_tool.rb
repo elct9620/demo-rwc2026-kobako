@@ -3,11 +3,14 @@
 # is handed the same boundary the app will run it behind — and what comes back
 # is the failure translated into something it can act on, not a stack trace.
 class LayoutCheckTool < RubyLLM::Tool
-  # Two goes at fixing what the sandbox reports. The sandbox names one fault at
-  # a time, so a writer that is converging needs one more look; a writer that is
-  # guessing is not helped by a third, and someone is waiting through every one
-  # of them.
-  ATTEMPTS = 2
+  # Where a writer that is not converging is stopped, rather than what one
+  # answer is worth spending. The sandbox names one fault at a time and a run
+  # costs a millisecond, so the writer is meant to check as often as it needs
+  # to — a script that has to be answered unedited is one that has to be
+  # checked again after every change. This is the backstop on a model looping
+  # on the same fault, and nothing here is sized by how long a reply token
+  # lasts.
+  ATTEMPTS = 8
 
   description <<~TEXT
     Run a layout script through the same sandbox that will run it for real and
@@ -44,7 +47,7 @@ class LayoutCheckTool < RubyLLM::Tool
   end
 
   def spent
-    "The sandbox has run #{ATTEMPTS} times for this message and there is no time for another. " \
+    "The sandbox has run #{ATTEMPTS} times for this message, which is as many as it will. " \
       "Answer with the best script you have."
   end
 end
