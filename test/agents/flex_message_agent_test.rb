@@ -24,4 +24,16 @@ class FlexMessageAgentTest < ActiveSupport::TestCase
   test "the writer is told what day it is where the community is" do
     assert_includes @instructions, Date.current.iso8601
   end
+
+  # The brief teaches by example — a card to imitate, and a card to copy when
+  # there is nothing to lay out. Each is a script like any other, and one the
+  # sandbox has to accept: an example it would stop is a lesson in how to fail.
+  test "every card the writer is shown is one the sandbox assembles" do
+    examples = @instructions.scan(/```ruby\n(.*?)```/m).flatten
+
+    assert_operator examples.size, :>, 1
+    examples.each do |example|
+      assert_not_instance_of LineFlex::Failure, LineFlex.render(example), example
+    end
+  end
 end
