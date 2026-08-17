@@ -1,11 +1,8 @@
 ```rbs
 # The whole of the Flex DSL the sandbox lends, and the whole of what it lends
 # it as. A verb exists only where a type below declares it — `footer` is a
-# Bubble's and not a Box's — and a keyword absent from a signature is dropped
-# without a word rather than refused.
-#
-# Every block is run against the type in its `[self: ...]` binding: that type
-# is what the verbs written inside the block are read from.
+# Bubble's and not a Box's — and a block runs against the type in its
+# `[self: ...]` binding, which is what the verbs inside it are read from.
 
 module Flex
   def self.with: () { () [self: Builder] -> void } -> void
@@ -32,7 +29,10 @@ class Bubble
   def footer: (?layout: Symbol, ?spacing: Symbol, ?margin: Symbol) { () [self: Box] -> void } -> void
 end
 
-# What goes inside a section. `layout` is :vertical, :horizontal or :baseline.
+# What goes inside a section. `layout` is :vertical, :horizontal or :baseline,
+# and a :baseline box holds `text` alone — a thumbnail beside a title is a
+# :horizontal box. That one is LINE's rule and not the builder's: nothing here
+# refuses it, and LINE refuses the whole reply.
 class Box
   def box: (?layout: Symbol, ?spacing: Symbol, ?margin: Symbol, ?flex: Integer) { () [self: Box] -> void } -> void
   def text: (?String text, ?wrap: bool, ?size: Symbol, ?color: String, ?align: Symbol, ?margin: Symbol, ?flex: Integer) ?{ () [self: Text] -> void } -> void
@@ -54,18 +54,4 @@ class Button
   def message: (String text, ?label: String) -> void
   def postback: (String data, ?label: String, ?display_text: String) -> void
 end
-
-# What LINE refuses once the card has left, none of which a type above can say
-# and none of which anything on this side will stop. The sandbox assembles it,
-# `layout_check` reports it assembled, and the sender is answered with nothing
-# at all — so these are read rather than discovered.
-#
-# - a `:baseline` box sits its children on one shared baseline and holds
-#   `text` and nothing else. An `image` or another `box` inside one is
-#   refused; a thumbnail beside a title is a `:horizontal` box
-# - a bubble is measured as JSON and refused past 10 KB, which is not
-#   something you can see. Count lines instead: a dozen rows of thumbnail and
-#   title come to about two thirds of it, so a bubble holds a handful of lines
-#   rather than a table
-# - `header`, `hero`, `body` and `footer` appear at most once each in a bubble
 ```
