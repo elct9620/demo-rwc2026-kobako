@@ -34,11 +34,42 @@ The two boundaries in that path behave differently on purpose. The signature
 check *rejects* — a delivery it cannot verify never gets parsed. The sandbox
 *contains* — it runs code it does not trust and hands back whatever happened.
 
+## What it answers from
+
+A bot with nothing held answers from whatever the model remembers, which for a
+local community is nothing. So three feeds fill one table, once a day:
+
+| Source | What it carries |
+| --- | --- |
+| KKTIX | Events, with the time and venue as free text |
+| YouTube | Talk recordings, and the one thumbnail worth keeping |
+| Facebook | What an event was actually like, which neither of the others has |
+
+One table rather than three, because reading them is a single query across the
+lot — what separates a source from the others is a column value. Only what all
+three carry is required of a row: a Facebook post has no title, and one that is
+only a photo has no text either, so a column a source cannot fill stays empty
+rather than being handed something invented.
+
+Nothing revisits a row. Each run reads its source in full and hands it to a
+unique index, which drops everything already seen — what a feed says about an
+event does not change once published, and what does change, how many seats are
+left, is not kept here. That is also why only YouTube's thumbnail is stored:
+Facebook answers a signed URL that expires about four days out, and there is no
+second visit to refresh it.
+
+Each source is a task of its own in `config/recurring.yml`. Nothing is retried
+and a failure only reaches the log, so a source having a bad day costs its own
+rows and leaves the other two alone.
+
 ## Where to look
 
 | Path | What it holds |
 | --- | --- |
 | `app/sandbox/line_flex.rb` | The boundary. `VERBS` is the whole vocabulary a script may speak |
+| `app/jobs/fetch_*_entries_job.rb` | The three sources, one job each |
+| `app/models/entry.rb` | What a fetched row is, and the three names a source may have |
+| `config/recurring.yml` | When each source is read, in the zone it says |
 | `app/controllers/webhooks_controller.rb` | Where a delivery arrives and is verified |
 | `app/jobs/answer_message_job.rb` | Where the card is built and the reply leaves |
 | `app/agents/flex_message_agent.rb` | Who writes the script, and what it is allowed to answer with |
@@ -63,6 +94,7 @@ more place the sender's words live and is deleted with the namespace.
 | `line-message-builder` | The Flex DSL the script speaks; the builder stays host-side |
 | `line-bot-api` | Verifies each delivery and carries the reply |
 | `ruby_llm` | Writes the layout script, and keeps the chat it was written in |
+| `nokogiri` | Reads the Atom and RSS the event and video feeds answer with |
 
 Kobako ships precompiled gems for macOS and 64-bit Linux, so installing it there
 needs no Rust toolchain.
@@ -82,6 +114,15 @@ away:
 ```bash
 set -a && source .env.production && set +a
 bin/rails runner script/answer_once.rb
+```
+
+The feeds have the same untested half — a stub cannot tell you a source moved
+or stopped answering. Running a job and counting what is in the table is what
+does:
+
+```bash
+set -a && source .env.production && set +a
+bin/rails runner 'FetchKktixEntriesJob.perform_now; puts Entry.group(:source).count'
 ```
 
 Answering a real message needs a channel, a key to write with, and a public
