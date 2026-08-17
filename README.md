@@ -10,7 +10,7 @@ LINE ──▶ POST /webhook ──▶ signature ──▶ enqueue ──▶ 200
                                             │
                      loading animation, then FlexMessageAgent
                                             │
-                 search_entries, upcoming_events ──▶ entries
+                        search_entries ──▶ entries
                                             │
                                   Kobako (wasm sandbox)  ◀── layout_check
                                             │
@@ -49,14 +49,25 @@ check *rejects* — a delivery it cannot verify never gets parsed. The sandbox
 
 A bot with nothing held answers from whatever the model remembers, which for a
 local community is nothing. So three feeds fill one table, once a day, and the
-writer reaches it through two tools rather than being handed the table:
-`search_entries` for a keyword, narrowed by source or by date, and
-`upcoming_events` for what has not happened yet — which is a comparison against
-now that no keyword could ask for.
+writer reaches it through `search_entries` rather than being handed the table.
+
+Every filter that tool takes is optional, because most questions name none of
+them. "Is there a video" is a source and no words to search for; "what is
+coming up" is today read forwards. A tool that insisted on a keyword answered
+neither, and the second had a tool of its own for want of one — which shaped
+the vocabulary around a situation rather than around the record. What did not
+fit under the limit comes back as a count, since a truncated list nobody
+flagged reads as the whole of it.
+
+The card is not that list. What the tool returns is material the answer is
+written from — rewritten, merged, left out — and how many bubbles it takes is
+a decision about the answer. Printing the rows is what a template does, and a
+template needs no sandbox: the boundary is only worth its cost when the layout
+is code written to answer something.
 
 A card names an event but does not link to it. The Flex DSL lends two actions,
 `message` and `postback`, and neither opens a URL — so a link on a card would
-be a string nobody can tap, and the tools do not return one.
+be a string nobody can tap, and the tool does not return one.
 
 | Source | What it carries |
 | --- | --- |
@@ -91,21 +102,24 @@ rows and leaves the other two alone.
 | `config/recurring.yml` | When each source is read, in the zone it says |
 | `app/controllers/webhooks_controller.rb` | Where a delivery arrives and is verified |
 | `app/jobs/answer_message_job.rb` | Where the card is built and the reply leaves |
-| `app/tools/` | The three things the writer may ask for: two into the table, one into the sandbox |
+| `app/tools/` | The two things the writer may ask for: one into the table, one into the sandbox |
 | `app/agents/flex_message_agent.rb` | Who writes the script, and what it is allowed to answer with |
-| `app/prompts/flex_message_agent/` | The brief: what it answers, how it behaves, what it has, what to do when it fails |
+| `app/prompts/flex_message_agent/` | The brief, and the RBS it hands over as the vocabulary |
 | `charts/demo-rwc2026-kobako/` | What k3s is asked for, with the reason beside each value |
 
 Nothing in the brief is restated from the code. The vocabulary is one contract
-in two directions — the ceiling the sandbox enforces and the list the writer
-aims at — and the same holds for the tools' names, the carousel's ceiling and
-today's date. A test fails if any of them reaches one side and not the other,
-and another runs every card the brief shows through the sandbox, because an
-example the sandbox would stop is a lesson in how to fail.
+in two directions — the ceiling the sandbox enforces and what the writer aims
+at — and it is handed over as an RBS rather than a list of names, because a
+name says what may be called and a signature says how. A verb belongs to one
+kind of node and not another, and a keyword no signature mentions is dropped
+in silence, which is the one mistake nothing on this path can catch.
 
-Twelve is where several of those meet: a carousel holds twelve bubbles, so it
-is also every entry one answer could show, and therefore every entry a tool is
-worth returning.
+The same holds for the tool's name, the carousel's ceiling and today's date. A
+test fails if any of them reaches one side and not the other, another asserts
+every verb the sandbox lends has a signature, and a third runs every card the
+brief shows through the sandbox — because an example the sandbox would stop is
+a lesson in how to fail, and the examples are the half of the contract that is
+actually executed.
 
 Each message opens its own chat, and the chat is kept: what was asked and what
 was answered land in the SQLite database beside everything else, which is one

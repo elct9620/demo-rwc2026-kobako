@@ -2,8 +2,9 @@
 # YouTube has a thumbnail worth keeping, only KKTIX has a schedule. A test that
 # reads across the lot needs all three shapes present.
 #
-# The dates are relative because "upcoming" is a comparison against now — fixed
-# ones would quietly stop being upcoming a few weeks after they were written.
+# The dates are relative because reading forwards from today is a comparison
+# against now — fixed ones would quietly stop being ahead of it a few weeks
+# after they were written.
 
 august_meetup:
   source: kktix
