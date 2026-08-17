@@ -191,6 +191,23 @@ helm upgrade -i demo oci://ghcr.io/elct9620/demo-rwc2026-kobako \
 `SECRET_KEY_BASE` has to stay put: changing it invalidates everything already
 signed with it.
 
+Replacing a value later is a different command — `create` refuses a Secret that
+exists, so the edited file is applied over it and the Pod restarted to read it:
+
+```bash
+kubectl -n rwc2026-demo create secret generic demo-line \
+  --from-env-file=.env.production --dry-run=client -o yaml | kubectl apply -f -
+
+kubectl -n rwc2026-demo rollout restart deployment/demo
+```
+
+`FB_PAGE_TOKEN` is the one that has to be replaced on a clock. Meta expires
+*data access* ninety days from the authorisation, separately from the token,
+which stays `is_valid` throughout — so nothing about the credential looks wrong
+when the fetch starts failing. `debug_token` reports the date under
+`data_access_expires_at`, and the new one is ninety days from whenever the page
+is authorised again, not from the old expiry.
+
 Then point the tunnel at the address the chart prints, and set the channel's
 webhook URL to that tunnel's `/webhook`:
 
