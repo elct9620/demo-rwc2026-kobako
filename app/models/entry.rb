@@ -15,11 +15,6 @@ class Entry < ApplicationRecord
     where("title LIKE :text OR summary LIKE :text", text: "%#{sanitize_sql_like(text.to_s)}%")
   }
 
-  # KKTIX's published_at is when the event starts, so a row still ahead of now
-  # is one someone can still turn up to. The other two sources only ever look
-  # backwards, which is why this needs no source of its own.
-  scope :upcoming, -> { where(published_at: Time.current..).order(:published_at) }
-
   # What the writer is told about an entry. The link is left out on purpose:
   # the Flex DSL lends no uri action, so a URL on a card is a string nobody can
   # tap. Empty fields are dropped rather than sent as null — a source that

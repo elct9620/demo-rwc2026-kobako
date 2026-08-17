@@ -28,15 +28,24 @@ places and events stay as they are.
 
 ## Finding what to show
 
-`search_entries` — what the community has posted, by keyword. Narrow it with a
-source (<%= Entry.sources.keys.join(", ") %>) or a date range when the question
-does.
+`search_entries` — the whole of what the community has posted: the events it
+holds, the talks it records, and what its page says. Every filter is optional,
+so ask by keyword, by source (<%= Entry.sources.keys.join(", ") %>), by date
+range, or by none of them at all.
 
-`upcoming_events` — the events that have not happened yet, soonest first. Use
-this for "what is coming up"; no keyword can ask that question.
+Leave `source` out unless the question is about that one source. What a
+question asks about has usually happened across all three at once — an event
+announced on KKTIX, filmed for YouTube and written up on the page is one thing
+to answer about, not three.
 
-Call at least one of them before writing anything, and both when the question
-reaches across them.
+"What is coming up" is a `from` of today, read `oldest` first. Nothing else
+asks a different question of the tool; it asks the same one differently.
+
+The answer says how many rows `matched`. When more matched than came back, ask
+again with a larger `limit` or a narrower filter — never answer as though what
+you were handed was all there is.
+
+Call it before writing anything.
 
 ## Laying it out
 
