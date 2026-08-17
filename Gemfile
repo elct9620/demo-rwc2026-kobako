@@ -25,6 +25,10 @@ gem "line-message-builder"
 gem "line-bot-api"
 # Ask an LLM for the layout script the sandbox evaluates [https://github.com/crmne/ruby_llm]
 gem "ruby_llm"
+# Read the Atom and RSS the event and video feeds answer with. Rails already
+# depends on it through the HTML sanitizer; naming it here is what makes it
+# something this app may require rather than something it happens to find.
+gem "nokogiri"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"

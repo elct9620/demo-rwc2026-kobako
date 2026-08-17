@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh-TW">
+  <id>tag:rubytaiwan.kktix.cc,2005:/events</id>
+  <link rel="alternate" type="text/html" href="https://rubytaiwan.kktix.cc/events"/>
+  <link rel="self" type="application/atom+xml" href="https://rubytaiwan.kktix.cc/events.atom?locale=zh-TW"/>
+  <title>Ruby Taiwan 近期公開活動 - KKTIX</title>
+  <updated>2026-08-17T10:45:21+08:00</updated>
+  <icon>http://kktix.com/favicon.ico</icon>
+  <logo>https://assets.kktix.io/upload_images/32807/logo_promote.gif</logo>
+  <entry>
+    <id>tag:rubytaiwan.kktix.cc,2005:Event/125160</id>
+    <published>2026-09-22T19:30:00+08:00</published>
+    <updated>2026-09-22T19:30:00+08:00</updated>
+    <link rel="alternate" type="text/html" href="https://rubytaiwan.kktix.cc/events/rubyjam2609"/>
+    <title>Ruby Jam 2026/09 月場</title>
+    <summary type="text">Ruby Jam — Ruby 程式語言社群，每月一次的技術交流聚會，涵蓋「主題技術分享」、「閃電秀」、「實體交流」，歡迎來聊聊職涯經驗、難題求助、技術新知！</summary>
+    <content type="html">時間：2026/09/22 19:30(+0800)~21:30
+地點：PicCafe in PicCollage / 台北市大安區光復南路102號3樓</content>
+    <author>
+      <name>Ruby Taiwan</name>
+      <uri>http://ruby.tw</uri>
+    </author>
+  </entry>
+  <entry>
+    <id>tag:rubytaiwan.kktix.cc,2005:Event/124526</id>
+    <published>2026-07-21T19:30:00+08:00</published>
+    <updated>2026-07-21T19:30:00+08:00</updated>
+    <link rel="alternate" type="text/html" href="https://rubytaiwan.kktix.cc/events/rubyjam2607"/>
+    <title>Ruby Jam 2026/07 月場</title>
+    <summary type="text">Ruby Jam — Ruby 程式語言社群，每月一次的技術交流聚會，涵蓋「主題技術分享」、「閃電秀」、「實體交流」，歡迎來聊聊職涯經驗、難題求助、技術新知！</summary>
+    <content type="html">時間：2026/07/21 19:30(+0800)~21:30
+地點：PicCafe in PicCollage / 台北市大安區光復南路102號3樓</content>
+    <author>
+      <name>Ruby Taiwan</name>
+      <uri>http://ruby.tw</uri>
+    </author>
+  </entry>
+  <entry>
+    <id>tag:rubytaiwan.kktix.cc,2005:Event/123500</id>
+    <published>2026-06-06T14:30:00+08:00</published>
+    <updated>2026-06-06T14:30:00+08:00</updated>
+    <link rel="alternate" type="text/html" href="https://rubytaiwan.kktix.cc/events/rubyonrag2606"/>
+    <title>Ruby on RAG Workshop</title>
+    <summary type="text">Ruby on RAG Workshop—從自然語言處理 NLP 的基礎觀念出發，探討文字及語言如何被計算機處理與理解，並最終以 Ruby 程式碼實踐。</summary>
+    <content type="html">時間：2026/06/06 14:30(+0800)~17:00
+地點：PicCafe in PicCollage / 台北市大安區光復南路102號3樓</content>
+    <author>
+      <name>Ruby Taiwan</name>
+      <uri>http://ruby.tw</uri>
+    </author>
+  </entry>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+</feed>

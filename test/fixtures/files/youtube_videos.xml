@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns:yt="http://www.youtube.com/xml/schemas/2015" xmlns:media="http://search.yahoo.com/mrss/" xmlns="http://www.w3.org/2005/Atom">
+ <link rel="self" href="http://www.youtube.com/feeds/videos.xml?channel_id=UC5YyLQH-M9_tSXIKv29bstg"/>
+ <id>yt:channel:5YyLQH-M9_tSXIKv29bstg</id>
+ <yt:channelId>5YyLQH-M9_tSXIKv29bstg</yt:channelId>
+ <title>Ruby Taiwan</title>
+ <link rel="alternate" href="https://www.youtube.com/channel/UC5YyLQH-M9_tSXIKv29bstg"/>
+ <author>
+  <name>Ruby Taiwan</name>
+  <uri>https://www.youtube.com/channel/UC5YyLQH-M9_tSXIKv29bstg</uri>
+ </author>
+ <published>2022-10-26T09:25:38+00:00</published>
+ <entry>
+  <id>yt:video:E5DvufDmmmI</id>
+  <yt:videoId>E5DvufDmmmI</yt:videoId>
+  <yt:channelId>UC5YyLQH-M9_tSXIKv29bstg</yt:channelId>
+  <title>@coscup Ruby Taiwan Track Preview |  RubyJam 2026.07</title>
+  <link rel="alternate" href="https://www.youtube.com/watch?v=E5DvufDmmmI"/>
+  <author>
+   <name>Ruby Taiwan</name>
+   <uri>https://www.youtube.com/channel/UC5YyLQH-M9_tSXIKv29bstg</uri>
+  </author>
+  <published>2026-07-22T07:39:42+00:00</published>
+  <updated>2026-08-07T02:28:29+00:00</updated>
+  <media:group>
+   <media:title>@coscup Ruby Taiwan Track Preview |  RubyJam 2026.07</media:title>
+   <media:content url="https://www.youtube.com/v/E5DvufDmmmI?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i2.ytimg.com/vi/E5DvufDmmmI/hqdefault.jpg" width="480" height="360"/>
+   <media:description>📚 COSCUP Ruby Taiwan Track Preview 📚
+
+「誒誒誒，你去研討會都聽得懂嗎？」
+「不用什麼都懂啊，我都是去搜集有趣的關鍵字回來研究。」
+「可是，我腦袋空空鴨子聽雷，會超～緊張、或超～想睡覺！」
+「……真極端，那你稍微預習一下？」
+「一個人查那些陌生的東西好無聊喔～（滾動）」
+「好啦！來約大家一起為 COSCUP 暖身吧！」
+
+今年的 COSCUP Ruby Taiwan 議程軌，將涵蓋 AI 與沙盒、資安、Rails、Web 應用、行動裝置應用、效能改善、Ruby 多種 runtime 實作等，內容十分豐富多元！
+
+我們將和 Ruby 世界的新鮮人 Vevila 一起閱讀每個議程介紹，從他的視角出發，一起輕鬆探索，聊聊對議程的各種困惑、好奇與期待，讓八月走進 COSCUP 的你，不再腦袋空空！
+
+“Hey… when you go to conferences, do you actually understand everything?”
+“You don’t have to. I usually just collect interesting keywords and look them up later.”
+“But my brain just goes blank… I either get super nervous or super sleepy!”
+“…That’s a bit extreme. Maybe do a bit of reading beforehand?”
+“Looking up random unfamiliar stuff alone is kinda boring though…”
+“Alright then! Let’s get everyone together and warm up for COSCUP!”
+
+This year’s COSCUP Ruby Taiwan track covers a wide range of topics, including AI sandboxes, security, Rails, web apps, mobile development, performance improvements, and Ruby runtime implementations… it’s going to be super diverse and super packed!
+
+We’ll go through each session topic together with Vevila, a newcomer to the Ruby world, exploring the session descriptions from her perspective. We’ll casually dig into questions, curiosities, and interesting ideas behind each talk, so when you step into COSCUP in August, you won’t feel lost at all!
+
+Facilitator
+
+Vevila Tsai, a college student on the way to graduation.
+
+00:00 Welcome &amp; Icebreaker
+12:00 About the Facilitator
+12:44 The SITCON Impact
+16:08 Overview: 11 Sessions!
+16:41 網站改版了，然後你的 Spider 就壞了：Ruby 爬蟲維護的現實
+19:38 Locale 何處尋：從 Accept-Language 到 UGC
+21:50 聊聊 Ruby 的 ReDoS 防禦：吃瓜設計權衡、整合 Rails 實踐、窺探 Regexp 未來動向
+27:01 你的 ruby.wasm 在手機上會壞
+30:12 GVL 對 Rails 延遲的實戰觀測 — 用 Vernier 與 gvl-tracing 看懂你的 Puma
+34:11 讓 AI 接管你的應用，打造微秒級無縫的 Ruby 安全沙盒
+42:03 Stoplight: Circuit Breakers for Ruby in the AI Era
+45:21 從 2026 年 3 月 Rails 安全更新看三個常見的設計陷阱
+51:35 Building Native Mobile Apps Using Rails
+54:33 The Deterministic Rubyist: Taming Your AI Pair Programmer with Nix
+59:28 Ruby on Ruby: ruby/spec, MRI Tests, and JRuby and Living on the Edge
+1:04:54 Q&amp;A
+1:05:33 Facilitator's Reflection &amp; Takeaways
+
+Slides: https://speakerdeck.com/vevila/2026-coscup-preview-ruby-jam
+Event Page: https://rubytaiwan.kktix.cc/events/rubyjam2607
+All Links: https://linktr.ee/rubytaiwan2008</media:description>
+   <media:community>
+    <media:starRating count="0" average="0.00" min="1" max="5"/>
+    <media:statistics views="65"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:X7dzINtGQdE</id>
+  <yt:videoId>X7dzINtGQdE</yt:videoId>
+  <yt:channelId>UC5YyLQH-M9_tSXIKv29bstg</yt:channelId>
+  <title>Ruby on RAG Workshop Session 1: NLP &amp; RAG Basics  by Steven Yang | RubyJam 2026.06</title>
+  <link rel="alternate" href="https://www.youtube.com/watch?v=X7dzINtGQdE"/>
+  <author>
+   <name>Ruby Taiwan</name>
+   <uri>https://www.youtube.com/channel/UC5YyLQH-M9_tSXIKv29bstg</uri>
+  </author>
+  <published>2026-07-22T07:39:34+00:00</published>
+  <updated>2026-07-23T07:57:25+00:00</updated>
+  <media:group>
+   <media:title>Ruby on RAG Workshop Session 1: NLP &amp; RAG Basics  by Steven Yang | RubyJam 2026.06</media:title>
+   <media:content url="https://www.youtube.com/v/X7dzINtGQdE?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i1.ytimg.com/vi/X7dzINtGQdE/hqdefault.jpg" width="480" height="360"/>
+   <media:description>Ruby on RAG Workshop
+
+「我可以在我的 Ruby 專案增加 LLM 功能嗎？想知道有哪些好用套件！」
+
+「我串了 LLM，但他像是什麼都不懂的菜鳥，可以請他翻文件再回答嗎？」
+
+「平常都在寫 Web，自然語言處理感覺水很深，我該從哪裡開始學？」
+
+「我有超多個人筆記與文件，我該如何透過 AI 妥善運用這些資源？」
+
+這場工作坊就是為你準備的！
+
+我們將從自然語言處理（NLP）的基礎觀念出發，探討文字及語言如何被計算機處理與理解，並最終以 Ruby 程式碼實踐。
+
+透過介紹檢索增強生成（RAG）背後的技術工作流，讓你了解文本預處理、分塊策略（Chunking）以及向量資料庫（VectorDB）的應用，並親手實作出一個能基於文本回答問題的 Web App。
+
+
+"Can I add LLM features to my Ruby projects? I want to know which gems are best for the job."
+
+ "I connected an LLM, but it acts like a clueless rookie. Can I make it read my documentation before answering?"
+
+ "I usually focus on Web development and NLP feels like a deep rabbit hole. Where should I even start?"
+
+ "I have tons of personal notes and files. How can I use AI to actually make the most of these resources?"
+
+This workshop is designed specifically for you!
+
+We will start with the fundamental concepts of Natural Language Processing (NLP) to explore how computers process and understand human language. From there, we will move into practical implementation using Ruby code.
+
+By introducing the technical workflow behind RAG (Retrieval-Augmented Generation), you will learn about text preprocessing, chunking strategies, and the application of vector databases. You will also build a functional Web App that can answer questions based on your own documents.
+
+Get your gear ready and join us to start your RAG journey.
+
+• Event Page: https://rubytaiwan.kktix.cc/events/rubyonrag2606
+• Codebase - Ruby Project Demo by Kasa:  https://github.com/rubytaiwan/ruby-on-rag-workshop
+• Slides - NLP Basics by Steven Yang https://speakerdeck.com/zongshengyang/ruby-on-rag-workshop</media:description>
+   <media:community>
+    <media:starRating count="3" average="5.00" min="1" max="5"/>
+    <media:statistics views="39"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:Fxnhz6OjDMs</id>
+  <yt:videoId>Fxnhz6OjDMs</yt:videoId>
+  <yt:channelId>UC5YyLQH-M9_tSXIKv29bstg</yt:channelId>
+  <title>Preview: Twenty Years of JRuby by Charles Nutter | RubyJam 2026.04: Meet the RubyKaigi Speakers</title>
+  <link rel="alternate" href="https://www.youtube.com/watch?v=Fxnhz6OjDMs"/>
+  <author>
+   <name>Ruby Taiwan</name>
+   <uri>https://www.youtube.com/channel/UC5YyLQH-M9_tSXIKv29bstg</uri>
+  </author>
+  <published>2026-07-22T07:39:24+00:00</published>
+  <updated>2026-07-23T06:51:15+00:00</updated>
+  <media:group>
+   <media:title>Preview: Twenty Years of JRuby by Charles Nutter | RubyJam 2026.04: Meet the RubyKaigi Speakers</media:title>
+   <media:content url="https://www.youtube.com/v/Fxnhz6OjDMs?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i3.ytimg.com/vi/Fxnhz6OjDMs/hqdefault.jpg" width="480" height="360"/>
+   <media:description>🌟 Meet the RubyKaigi Speakers 🌟 Part 1
+
+Twenty Years of JRuby / JRuby 二十載的進擊與未來展望
+
+For the past two decades, JRuby has been pushing the boundaries of what Ruby can achieve. From pioneering the first JIT compiler for Ruby to enabling true parallel multi-threading, JRuby has become the premier alternative implementation deployed at scale.
+
+In this video, Charles Nutter introduces his upcoming Keynote for RubyKaigi 2026 to the Taiwan Ruby community, sharing the journey and the future of the JRuby ecosystem.
+
+二十年前，Charles Nutter 開始投入 JRuby 的開發，致力於為 Ruby 世界開啟全新的可能性。從建立第一個 Ruby 的 JIT 編譯器，到推動社群擁抱並行執行緒（Parallel Threads），JRuby 已成為唯一能在大規模部署環境中與原生 Ruby 並駕齊驅的替代方案。
+
+在本影片中，講者將親自為台灣 Ruby 社群介紹他在 RubyKaigi 2026 的 Keynote 議程「Twenty Years of JRuby」。</media:description>
+   <media:community>
+    <media:starRating count="0" average="0.00" min="1" max="5"/>
+    <media:statistics views="19"/>
+   </media:community>
+  </media:group>
+ </entry>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+</feed>
