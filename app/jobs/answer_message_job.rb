@@ -78,7 +78,7 @@ class AnswerMessageJob < ApplicationJob
   end
 
   def reply(token, message)
-    _body, status, _headers = client.reply_message_with_http_info(
+    body, status, _headers = client.reply_message_with_http_info(
       reply_message_request: Line::Bot::V2::MessagingApi::ReplyMessageRequest.new(
         reply_token: token,
         messages: [ message ]
@@ -86,7 +86,19 @@ class AnswerMessageJob < ApplicationJob
     )
 
     # A refused reply arrives as a status code; the SDK does not raise for it.
-    logger.error("LINE refused the reply with #{status}") unless status == 200
+    logger.error("LINE refused the reply with #{status} — #{refusal(body)}") unless status == 200
+  end
+
+  # LINE says which property it refused and why, and this is the only place
+  # that ever hears it: a card the sandbox assembled can still break a rule
+  # that lives only at LINE, and then nothing else on this path knows anything
+  # happened. Without the detail, every refusal reads the same and the script
+  # has to be dug out of the chat to find out which line was wrong.
+  def refusal(body)
+    return "no reason given" unless body.respond_to?(:message)
+
+    faults = Array(body.details).map { |detail| "#{detail.property}: #{detail.message}" }
+    [ body.message, *faults ].compact_blank.join(" | ")
   end
 
   def client

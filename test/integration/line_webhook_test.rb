@@ -149,6 +149,27 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
     end
   end
 
+  # A card the sandbox assembled can still break a rule that lives only at
+  # LINE, and then this line is the only trace: the sender is shown nothing,
+  # no job fails, and the script is buried in the chat. What it has to carry
+  # is which property was refused, or the next one costs the same dig.
+  test "a refused reply records which property LINE refused" do
+    stub_request(:post, REPLY_URL).to_return(
+      status: 400,
+      body: {
+        message: "The request body has 1 error(s)",
+        details: [ { message: "may not be used in a baseline box", property: "/message/contents/body/contents/0" } ]
+      }.to_json,
+      headers: JSON_TYPE
+    )
+
+    log = capture_job_log { deliver(text_event) }
+
+    assert_match "400", log
+    assert_match "may not be used in a baseline box", log
+    assert_match "/message/contents/body/contents/0", log
+  end
+
   test "a delivery signed with the wrong key is refused before anything is parsed" do
     deliver(text_event, signature: "not-the-signature")
 
@@ -166,6 +187,18 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
   end
 
   private
+
+  # The job writes where Active Job writes, so the log is read from there
+  # rather than from a file the test would have to find.
+  def capture_job_log
+    written = StringIO.new
+    kept = ActiveJob::Base.logger
+    ActiveJob::Base.logger = ActiveSupport::Logger.new(written)
+    yield
+    written.string
+  ensure
+    ActiveJob::Base.logger = kept
+  end
 
   # The content type is what LINE sends, so a delivery here carries it too.
   # Passing nil leaves the header off, which is not the same as sending a
