@@ -69,6 +69,20 @@ class FetchEntriesTest < ActiveSupport::TestCase
     assert_equal caught, Entry.count
   end
 
+  # A page whose data access has lapsed answers 400 like a malformed request
+  # does, and only the reason tells the two apart — one needs a person to
+  # re-authorise, the other needs a fix here.
+  test "a refusal is logged with the reason the source gave for it" do
+    stub_request(:get, facebook_url).to_return(
+      status: 400,
+      body: { error: { code: 190, error_subcode: 463, message: "Session has expired" } }.to_json
+    )
+
+    assert_logged(/answered 400 .*Session has expired/) { FetchFacebookEntriesJob.perform_now }
+
+    assert_equal 0, Entry.count
+  end
+
   test "a source that stops answering leaves the table as it was" do
     stub_request(:get, FetchYoutubeEntriesJob::FEED_URL).to_return(status: 503)
 

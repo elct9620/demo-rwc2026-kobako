@@ -16,7 +16,15 @@ module FetchesSource
     response = Net::HTTP.get_response(URI(url), headers)
     return response.body if response.is_a?(Net::HTTPSuccess)
 
-    logger.error("#{self.class.name}: the source answered #{response.code}")
+    # The status alone does not say what to do about it. Meta answers 400 for a
+    # page whose data access has lapsed, and only the body distinguishes that —
+    # "Session has expired" — from a request this app got wrong; the first needs
+    # a person to re-authorise the page and no amount of retrying will do.
+    #
+    # Truncated, because a source answering with an error page should not fill
+    # the log with it. Safe to keep at all because no URL here carries a
+    # credential: the one token in play travels in a header.
+    logger.error("#{self.class.name}: the source answered #{response.code} — #{response.body.to_s.squish.truncate(200)}")
     nil
   end
 
