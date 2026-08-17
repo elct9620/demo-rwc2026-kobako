@@ -23,7 +23,14 @@ module FetchesSource
   # Rows already in the table are skipped rather than compared: what a feed
   # says about an event or a video does not change once it is published, and
   # what does change — how many seats are left — is not kept here.
+  #
+  # An answer nothing could be read out of is worth a line of its own. None of
+  # the three is ever legitimately empty, so a source that starts serving a
+  # login wall or a challenge page under a 200 would otherwise pass as quietly
+  # as a source that simply had no news.
   def store(rows)
-    Entry.insert_all(rows, unique_by: [ :source, :external_id ]) if rows.any?
+    return logger.error("#{self.class.name}: the answer held no entries") if rows.empty?
+
+    Entry.insert_all(rows, unique_by: [ :source, :external_id ])
   end
 end

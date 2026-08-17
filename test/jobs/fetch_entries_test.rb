@@ -77,7 +77,28 @@ class FetchEntriesTest < ActiveSupport::TestCase
     assert_equal 0, Entry.count
   end
 
+  # The shape this round is built to notice: a source answers, so nothing looks
+  # broken, but there is nothing in the answer to read.
+  test "an answer with nothing in it says so, rather than passing for quiet news" do
+    stub_request(:get, FetchYoutubeEntriesJob::FEED_URL)
+      .to_return(status: 200, body: "<html><body>Sign in to continue</body></html>")
+
+    assert_logged(/held no entries/) { FetchYoutubeEntriesJob.perform_now }
+
+    assert_equal 0, Entry.count
+  end
+
   private
+
+  def assert_logged(pattern)
+    written = StringIO.new
+    original = ActiveJob::Base.logger
+    ActiveJob::Base.logger = ActiveSupport::Logger.new(written)
+    yield
+    assert_match pattern, written.string
+  ensure
+    ActiveJob::Base.logger = original
+  end
 
   def stub_source(url, fixture)
     stub_request(:get, url).to_return(
