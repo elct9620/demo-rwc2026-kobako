@@ -10,12 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_16_132619) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_17_024315) do
   create_table "chats", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "model_id"
     t.datetime "updated_at", null: false
     t.index ["model_id"], name: "index_chats_on_model_id"
+  end
+
+  create_table "entries", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "external_id", null: false
+    t.json "metadata", default: {}
+    t.datetime "published_at", null: false
+    t.string "source", null: false
+    t.text "summary"
+    t.string "thumbnail_url"
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.string "url", null: false
+    t.index ["published_at"], name: "index_entries_on_published_at"
+    t.index ["source", "external_id"], name: "index_entries_on_source_and_external_id", unique: true
   end
 
   create_table "messages", force: :cascade do |t|
