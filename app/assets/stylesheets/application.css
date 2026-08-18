@@ -34,9 +34,12 @@
   --text-note: 0.75rem; /* 12 */
 
   /* Leading answers a question about the text rather than about its size.
-     `body` is for anything that may wrap; `heading` sits below it and hands the
-     extra back through a negative margin, so a one-line heading still lands
-     where the design file's 100% put it. */
+     `none` is for a line laid out as a single line, where the line box has to
+     equal the type size for the box around it to measure out; `body` is for
+     anything that may wrap; `heading` sits between and hands the extra back
+     through a negative margin, so a one-line heading still lands where the
+     design file's 100% put it. */
+  --leading-none: 1;
   --leading-heading: 1.25;
   --leading-body: 1.5;
 
@@ -69,6 +72,49 @@ body {
   color: var(--theme-text);
 }
 
+/* The theme's sidebar, laid along the top edge instead of down the side. Two
+   parts: the solid block, and an ::after that draws the diagonal. The polygon
+   is the same one either way — what changes is which edge the strip hangs off,
+   so the cut recedes from the left of the page to nothing at the right. */
+header {
+  position: relative;
+  padding: 2rem 3rem;
+  background: var(--theme-surface);
+  color: var(--theme-on-surface);
+  font-size: var(--text-heading);
+  line-height: var(--leading-none);
+}
+
+/* Absolutely positioned, so it takes no space and paints over whatever follows
+   — which is why main clears it with padding rather than being pushed by it. */
+header::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: var(--spacing-slash);
+  background: var(--theme-surface);
+  clip-path: polygon(0 0, 100% 0%, 0 100%);
+}
+
+/* Padding sets the content width on its own, so nothing inside ever names one
+   and moving an edge moves the whole page with it. The top has the diagonal's
+   height added to it, because that is the one edge something is already
+   occupying. */
+main {
+  padding: calc(var(--spacing-slash) + 2rem) 3rem 3rem;
+}
+
+/* Addressed by the id Turbo aims its prepend at, rather than through a class
+   beside it: the id is already the contract between the model and the page, and
+   a second name for the same element is a second thing to keep in step. */
+#chats {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
 /* Vertical rhythm is stated as margins so it can be read off directly, and the
    leading is kept out of it: the negative top margin hands back exactly the
    half-leading a taller line box adds above the glyphs. Being in em, the
@@ -84,9 +130,15 @@ h2 {
    h1 the heading step. There is one page here and it is the whole of the demo,
    so it is a chapter rather than a page inside one — and the step apart is also
    what keeps the page's own title from reading as loud as the question each
-   card carries. */
+   card carries.
+
+   The theme spaces a title from a subtitle by 16 and a subtitle from the
+   content by 32. This page carries no subtitle, so the title is already against
+   the content and takes the wider of the two; at 16 it would sit closer to the
+   first card than the cards sit to each other and read as part of it. */
 h1 {
   font-size: var(--text-title);
+  margin-bottom: 2rem;
 }
 
 /* Anything that can run to a second line takes the copy leading. */

@@ -207,6 +207,11 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
 
     get "/"
     assert_match "answered", response.body
+    # Where each push lands is named twice — once by the model, once by the
+    # page — and a prepend that lands nowhere is invisible: the broadcast still
+    # goes out and the card simply never appears. So the page is asked for both
+    # elements the model aims at, nested the way a card sits inside the list.
+    assert_select "#chats ##{Chat.sole.script_id}"
   end
 
   test "a delivery signed with the wrong key is refused before anything is parsed" do
