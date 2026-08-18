@@ -138,14 +138,18 @@ values sit beside each other. Two answers that say different things have no
 reason to look alike.
 
 Width is shared, never measured. In a horizontal or baseline box each child
-gets its `flex` over the sum of the row's, so a `flex: 1` beside a `flex: 5`
-gets one sixth of the row — a word, not a phrase. A short label you wrote
-yourself takes `flex: 0` and exactly its own width, leaving the rest to what it
-labels.
+gets its `flex` over the sum of that row's — a `flex: 1` beside a `flex: 5`
+gets one sixth of it, and left unsaid it is 1, so two children split the row in
+half.
 
-Whether that share is enough turns on who chose the length: you chose the
-label's, not a title's or a summary's. Anything whose length you did not choose
-says `wrap: true`.
+No share can be checked against the words put in it. LINE fixes no width for a
+bubble — it moves with the screen, the font and the reader's language — and
+text past its share is cut off with an ellipsis rather than carried onto a
+second line. So a label and the value it labels do not share a row: the label
+goes above it in a `vertical` box, where the width is the whole card's and
+nothing has to fit.
+
+Anything whose length you did not choose says `wrap: true`.
 
 What follows is one answer laid out one way. It is here for the nesting and to
 show a script that runs, not as the shape an answer takes.
@@ -157,8 +161,8 @@ Flex.with do
     hero_image "https://i.ytimg.com/vi/xxxx/hqdefault.jpg", size: :full, aspect_ratio: "20:13", aspect_mode: :cover
     body layout: :vertical, spacing: :md do
       text "Ruby Jam 九月場", weight: :bold, size: :xl, wrap: true
-      box layout: :baseline, spacing: :sm do
-        text "時間", color: "#aaaaaa", size: :sm, flex: 0
+      box layout: :vertical, spacing: :xs do
+        text "時間", color: "#aaaaaa", size: :sm
         text "9/20 19:00 台北", wrap: true, color: "#666666", size: :sm
       end
     end
