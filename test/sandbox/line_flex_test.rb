@@ -12,7 +12,7 @@ class LineFlexTest < ActiveSupport::TestCase
           end
           box layout: :baseline, spacing: :sm do
             icon "https://example.com/clock.png", size: :sm
-            text "10:00 - 23:00", wrap: true, color: "#666666", size: :sm, flex: 5
+            text "10:00 - 23:00", wrap: true, color: "#666666", size: :sm
           end
         end
         footer layout: :vertical do

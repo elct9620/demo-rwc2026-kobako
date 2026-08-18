@@ -45,9 +45,9 @@ class LayoutCheckToolTest < ActiveSupport::TestCase
     assert_not_includes answer, "does not lend"
   end
 
-  # The one mistake that used to pass every boundary and surface only as a card
-  # missing what was asked for. It reaches the writer now, and it arrives with
-  # the keywords that component would have taken instead.
+  # A keyword a component does not take is the one mistake a finished card
+  # cannot show — it would simply be missing what was asked for. So what comes
+  # back has to name the keywords that component would have taken instead.
   test "a keyword a component does not take comes back with the ones it does" do
     answer = LayoutCheckTool.new.execute(script: <<~MRUBY)
       Flex.with do
