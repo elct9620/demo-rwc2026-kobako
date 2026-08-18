@@ -68,6 +68,23 @@ module LineFlex
     def respond_to_guest?(name) = CALLABLE.include?(name)
   end
 
+  # The node a script starts from. A Flex Message holds one container, and the
+  # builder's +bubble+ and +carousel+ assign the same slot — so a second one
+  # here overwrites the first and the answer loses half of itself with nothing
+  # raised and the check still green. Only the root means that by those two
+  # verbs, which is why the refusal lives on a node of its own.
+  class Root < Node
+    CONTAINERS = %i[bubble carousel].freeze
+
+    def method_missing(name, *, **)
+      return super unless CONTAINERS.include?(name)
+      raise ArgumentError, "A Flex Message holds one container. Put every bubble inside the carousel rather than beside it." if @container
+
+      @container = true
+      super
+    end
+  end
+
   # The backend bound at the guest constant +Studio+. A provider mints one per
   # invocation, so no builder state survives into the next run.
   #
@@ -77,7 +94,7 @@ module LineFlex
   # spells every key the way line-bot-api reads it.
   class Studio
     def root
-      Node.new(
+      Root.new(
         Line::Message::Builder::Flex::Builder.new(
           context: Line::Message::Builder::Context.new(nil, mode: :sdkv2)
         )

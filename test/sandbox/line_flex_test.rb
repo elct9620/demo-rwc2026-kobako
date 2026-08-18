@@ -72,6 +72,25 @@ class LineFlexTest < ActiveSupport::TestCase
     assert_equal :service, result.reason
   end
 
+  # The builder assigns one slot for both verbs, so the second container wins
+  # and the first is gone without a word — a whole carousel dropped from an
+  # answer that still assembles and still checks green. This is the one refusal
+  # the boundary makes on its own behalf, which is why it is pinned here.
+  test "a second container at the root comes back as a value" do
+    result = LineFlex.render(<<~MRUBY)
+      Flex.with do
+        alt_text "Sessions"
+        carousel do
+          bubble { body(layout: :vertical) { text "第 1 場" } }
+        end
+        bubble { body(layout: :vertical) { text "共 15 場" } }
+      end
+    MRUBY
+
+    assert_instance_of LineFlex::Failure, result
+    assert_match(/one container/, result.message)
+  end
+
   test "a button with nothing to do comes back as a value" do
     result = LineFlex.render(<<~MRUBY)
       Flex.with do
