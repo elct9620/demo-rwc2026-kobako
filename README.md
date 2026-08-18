@@ -174,6 +174,17 @@ set -a && source .env.production && set +a
 bin/rails runner script/answer_once.rb
 ```
 
+Looking at the page needs neither a delivery nor a request. What it shows is
+the record a run leaves behind, so a preview writes that record directly — in
+both of the states a card is ever in:
+
+```bash
+bin/rails runner script/preview_cards.rb
+bin/dev                    # then open http://localhost:3000
+```
+
+It replaces every chat, which is why it refuses to run outside development.
+
 The feeds have the same untested half — a stub cannot tell you a source moved
 or stopped answering. Running a job and counting what is in the table is what
 does:
