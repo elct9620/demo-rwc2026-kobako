@@ -129,6 +129,38 @@ class SearchEntriesToolTest < ActiveSupport::TestCase
     assert_equal SearchEntriesTool::DEFAULT_LIMIT, answer["entries"].size
   end
 
+  # Without this the only way past the first rows is a larger limit, which reads
+  # them again — so a card showing twelve of a hundred has nothing to offer that
+  # is not what it already showed. The count stays the whole filter's, which is
+  # what says whether there is anything further on.
+  test "an offset reads on from where the rows before it stopped" do
+    12.times do |index|
+      Entry.create!(
+        source: "youtube",
+        external_id: "chapter-#{index}",
+        title: "第 #{index} 講",
+        url: "https://www.youtube.com/watch?v=chapter-#{index}",
+        published_at: index.days.ago
+      )
+    end
+
+    first = JSON.parse(SearchEntriesTool.new.execute(query: "講", limit: 4))
+    second = JSON.parse(SearchEntriesTool.new.execute(query: "講", limit: 4, offset: 4))
+
+    assert_equal [ "第 0 講", "第 1 講", "第 2 講", "第 3 講" ], first["entries"].pluck("title")
+    assert_equal [ "第 4 講", "第 5 講", "第 6 講", "第 7 講" ], second["entries"].pluck("title")
+    assert_equal first["matched"], second["matched"]
+  end
+
+  # Past the end is a window with nothing in it rather than a fault: the writer
+  # asked a question the record has an answer to, and the answer is none left.
+  test "an offset past everything that matched answers no rows and the same count" do
+    answer = JSON.parse(SearchEntriesTool.new.execute(source: "youtube", offset: 500))
+
+    assert_empty answer["entries"]
+    assert_equal 1, answer["matched"]
+  end
+
   # The budget is what the writer can read, so asking past it is answered with
   # the budget rather than refused.
   test "asking for more than the budget answers the budget" do

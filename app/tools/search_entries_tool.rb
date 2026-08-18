@@ -27,7 +27,8 @@ class SearchEntriesTool < RubyLLM::Tool
     leave `source` out unless the question is about that source alone.
 
     When `matched` is larger than the rows returned, ask again with a larger
-    `limit` or a narrower filter rather than assuming the rest is nothing.
+    `limit`, a narrower filter, or an `offset` past what you have already read,
+    rather than assuming the rest is nothing.
   TEXT
 
   param :query, desc: "Words to look for in an entry's title or summary. Omit to filter without searching.", required: false
@@ -36,13 +37,16 @@ class SearchEntriesTool < RubyLLM::Tool
   param :to, desc: "Only entries published on or before this date, as YYYY-MM-DD.", required: false
   param :order, desc: "#{ORDERS.keys.join(" or ")} first. Defaults to newest.", required: false
   param :limit, type: "integer", desc: "How many rows to return, at most #{MAX_LIMIT}. Defaults to #{DEFAULT_LIMIT}.", required: false
+  param :offset, type: "integer", desc: "How many rows to skip before returning any, so the same filter can be read on past where it was left. Defaults to 0.", required: false
 
-  def execute(query: nil, source: nil, from: nil, to: nil, order: nil, limit: nil)
+  def execute(query: nil, source: nil, from: nil, to: nil, order: nil, limit: nil, offset: nil)
     return unknown(:source, source, Entry.sources.keys) if source.present? && !Entry.sources.key?(source)
     return unknown(:order, order, ORDERS.keys) if order.present? && !ORDERS.key?(order)
 
     entries = filter(query:, source:, from:, to:)
-    rows = entries.order(published_at: ORDERS.fetch(order, :desc)).limit(clamp(limit))
+    # +matched+ counts the filter rather than the window, so how much is left is
+    # still readable from a row that starts partway through.
+    rows = entries.order(published_at: ORDERS.fetch(order, :desc)).offset(skip(offset)).limit(clamp(limit))
 
     { matched: entries.count, entries: rows }.to_json
   rescue Date::Error
@@ -68,6 +72,11 @@ class SearchEntriesTool < RubyLLM::Tool
   end
 
   def clamp(limit) = limit.nil? ? DEFAULT_LIMIT : limit.to_i.clamp(1, MAX_LIMIT)
+
+  # A window past the end answers no rows rather than an error — that is what
+  # the count is for. Reading backwards from the start is not a question, so a
+  # negative one is read as none.
+  def skip(offset) = offset.to_i.clamp(0..)
 
   # The same shape the sandbox answers a name it does not lend: say what is
   # wrong and hand back the whole of what is allowed, so the next call can be
