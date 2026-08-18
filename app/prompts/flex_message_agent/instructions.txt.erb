@@ -84,9 +84,7 @@ Flex.with do
   bubble do
     hero_image "https://i.ytimg.com/vi/xxxx/hqdefault.jpg", size: :full, aspect_ratio: "20:13", aspect_mode: :cover
     body layout: :vertical, spacing: :md do
-      text do
-        span "Ruby Jam 九月場", weight: :bold, size: :xl
-      end
+      text "Ruby Jam 九月場", weight: :bold, size: :xl, wrap: true
       box layout: :baseline, spacing: :sm do
         text "時間", color: "#aaaaaa", size: :sm, flex: 1
         text "9/20 19:00 台北", wrap: true, color: "#666666", size: :sm, flex: 5

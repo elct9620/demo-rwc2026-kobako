@@ -35,15 +35,19 @@ end
 # refuses it, and LINE refuses the whole reply.
 class Box
   def box: (?layout: Symbol, ?spacing: Symbol, ?margin: Symbol, ?flex: Integer) { () [self: Box] -> void } -> void
-  def text: (?String text, ?wrap: bool, ?size: Symbol, ?color: String, ?align: Symbol, ?margin: Symbol, ?flex: Integer) ?{ () [self: Text] -> void } -> void
+  # `wrap` is false where it is not passed, and a line that does not wrap is cut
+  # off with an ellipsis rather than carried onto a second one. Anything that
+  # can run past the width of a card says `wrap: true`.
+  def text: (?String text, ?wrap: bool, ?weight: Symbol, ?size: Symbol, ?color: String, ?align: Symbol, ?margin: Symbol, ?flex: Integer) ?{ () [self: Text] -> void } -> void
   def button: (?style: Symbol, ?height: Symbol, ?margin: Symbol, ?flex: Integer) { () [self: Button] -> void } -> void
   def image: (String url, ?size: Symbol, ?aspect_ratio: String, ?aspect_mode: Symbol, ?margin: Symbol) -> void
   # Takes nothing: the builder spells a separator as its type and no more.
   def separator: () -> void
 end
 
-# Note what is missing: `weight` is a Span's, so bold is written as a `text`
-# with a block of spans rather than as a keyword on the text itself.
+# A `text` given a block instead of a string, which is how one line carries
+# runs that look different from each other. A line with one look throughout
+# needs none of this — it says `weight:` on the `text` itself.
 class Text
   def span: (String, ?size: Symbol, ?color: String, ?weight: Symbol, ?decoration: Symbol) -> void
 end
