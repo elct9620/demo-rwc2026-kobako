@@ -168,7 +168,7 @@ Flex.with do
     end
     footer layout: :vertical do
       button style: :link do
-        message "Ruby Jam 九月場在講什麼？", label: "這場在講什麼"
+        message "Ruby Jam 九月場在講什麼？", label: "九月場在講什麼"
       end
     end
   end
@@ -180,6 +180,11 @@ message and arrives on its own, with this card gone and nothing around it — so
 it names what it is about, and asks something the tools can answer. Repeating
 the question just asked, or asking for a link or a recording to play, leads to
 a card that cannot answer.
+
+Its `label` is what the reader decides by, so it says which answer is waiting
+rather than that one is: a month, a name, or what this card leaves out. "More
+events" names none of those, and the reader taps it to find out what they asked
+for.
 
 `alt_text` is what a notification shows, so every card needs one, and it says
 what the answer is rather than repeating the question.
