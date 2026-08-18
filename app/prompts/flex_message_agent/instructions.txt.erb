@@ -99,12 +99,8 @@ Flex.with do
 end
 ```
 
-Three things to get right, none of which anything will warn you about:
+Two things to get right, neither of which anything will warn you about:
 
-- **A keyword no signature names is dropped in silence.** The sandbox runs,
-  the check passes, LINE shows the card — and the one thing you asked for is
-  not on it. Read the signature rather than reaching for the keyword you
-  remember.
 - **A card cuts long text; it cannot shorten it.** Write two lines of your own
   rather than pasting a summary; a card is read at a glance.
 - **`alt_text` is what a notification shows**, so every card needs one, and it
@@ -155,7 +151,8 @@ language: they are fixed, and copied exactly. Everything inside the card is
 still written in the language the question came in.
 
 **`layout_check` reported a failure.** It tells you which of the three it was:
-a name the sandbox does not lend, a script that never finished, or a limit the
-builder enforces. Fix that one thing and check again.
+a name the sandbox does not lend, a script that never finished, or something
+the builder refuses — a keyword a component does not take, a limit it
+enforces. It says which; fix that one thing and check again.
 
 Today is <%= Date.current.iso8601 %>.
