@@ -21,6 +21,7 @@
 :root {
   /* Traditional Japanese colours, named after the colour rather than its use. */
   --color-white: #ffffff;
+  --color-gray-200: #e3e3e3;
   --color-gray-500: #7a7a7a;
   --color-kon-500: #0f2540; /* 紺 */
   --color-gunJyo-500: #51a8dd; /* 群青 */
@@ -62,6 +63,25 @@
   /* The width the theme draws a stroke or a frame at. */
   --spacing-line: 0.25rem;
 
+  /* How long a change takes is a question about the change rather than about
+     what is changing. `travel` is for something moving or resizing, which has
+     ground to cover — here, the focus stepping from one card to the next as a
+     newer one arrives. `settle` is for something arriving in place, which has
+     none. The curves follow: `move` carries distance, `fade` carries none and
+     spreads itself evenly instead, so a fade lent the move curve would be over
+     in a twentieth of the time it was given. */
+  --tf-motion-travel: 600ms;
+  --tf-motion-settle: 500ms;
+  --tf-motion-ease-move: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --tf-motion-ease-fade: ease-in-out;
+  --tf-motion-rise: 1.25rem;
+
+  /* An extension. The theme's absence is binary — a piece is present, or it is
+     held at nothing while keeping its place — because a slide shows one thing at
+     a time. This page keeps what it has already shown, so it needs a third
+     state: still legible, plainly not the one being watched. */
+  --tf-receded: 0.55;
+
   /* GitHub Light, which is what the design file specifies for code and what the
      theme hands Shiki. Five colours is the whole of it, so every token Rouge
      emits is sorted into one of them rather than reaching for a sixth. */
@@ -73,6 +93,10 @@
 
   /* What each value plays, kept apart from what it is, so recolouring reads as
      colour names and re-assigning roles reads as roles. */
+  /* Kon and gunJyo carry the page; the theme's accent is reserved for the frame
+     around whatever is being spoken about at one moment, and there is no such
+     moment here — a card is current for as long as it is the newest, so an
+     accent used for it would be on screen permanently and stop being one. */
   --theme-primary: var(--color-gunJyo-500);
   --theme-neutral: var(--color-gray-500);
   --theme-text: var(--color-kon-500);
@@ -131,20 +155,48 @@ main {
   gap: 3rem;
 }
 
+/* A rule down the left edge, which is how the theme marks one entry in a list
+   of them. It runs the height of the card rather than the height of a line, so
+   what it groups is the whole of one exchange — the question, what state it is
+   in, and the script — instead of merely parting one from the next. Nothing is
+   filled: a panel of colour behind the script would take the code's own palette
+   away from it, and the palette is what the script is being read for. */
+#chats > article {
+  padding-left: 2rem;
+  border-left: var(--spacing-line) solid var(--theme-primary);
+  /* Which card is current changes the moment a newer one is prepended, and both
+     of the things that say so change with it. Giving them a length is what makes
+     the current card read as stepping from one to the next rather than blinking
+     out of one and into the other. */
+  transition:
+    border-color var(--tf-motion-travel) var(--tf-motion-ease-fade),
+    opacity var(--tf-motion-travel) var(--tf-motion-ease-fade);
+}
+
+/* The newest is the one being written, so it is the one that keeps the primary
+   colour and its full weight. The rest are context: they recede through opacity
+   and keep their place, which is the theme's vocabulary for absence — nothing
+   shrinks and nothing leaves the flow. Addressed by position rather than by a
+   flag on the record, which is what lets the current card change on its own as
+   soon as another is prepended. */
+#chats > article:not(:first-child) {
+  border-left-color: var(--color-gray-200);
+  opacity: var(--tf-receded);
+}
+
 /* Vertical rhythm is stated as margins so it can be read off directly, and the
    leading is kept out of it: the negative top margin hands back exactly the
    half-leading a taller line box adds above the glyphs. Being in em, the
    correction follows whichever step of the scale is in play. */
-/* What the sender typed, reproduced rather than written here. At the heading
-   step it read as the page's own name for the card, and a long message then
-   crowded out the script it was asked about; at the body step it wraps like the
-   sentence it is and stays the shorter half of the card however long it runs.
-   The rule down its left edge is the theme's own mark for a line that came from
-   somewhere else. */
+/* What the sender typed, reproduced rather than written here. It labels the
+   card the way a block's label names a block, so it takes the block label's
+   weight and stays at the body step — at the heading step it carried the page's
+   own voice, and a long message crowded out the script it was asked about.
+   It has no rule of its own: the card already carries one, and a second running
+   parallel to it a centimetre away would read as a mistake. */
 blockquote {
-  margin: 0 0 1rem;
-  padding-left: 1rem;
-  border-left: var(--spacing-line) solid var(--theme-primary);
+  margin: 0 0 0.5rem;
+  font-weight: 500;
   line-height: var(--leading-body);
 }
 
@@ -164,6 +216,40 @@ li {
   font-size: var(--text-sub);
   line-height: var(--leading-none);
   color: var(--theme-neutral);
+}
+
+/* A draft is a version the writer is still working against, so it is said in
+   the page's own colour. An answer has settled and goes back to being an
+   annotation, which is what the neutral is for. */
+.state[data-state="Draft"] {
+  color: var(--theme-primary);
+}
+
+/* Two animations rather than one, because a keyframe animation carries a single
+   timing function for everything it touches: the rise covers ground and
+   decelerates into place, while the fade has none to cover and spreads itself
+   evenly instead. */
+@keyframes arrive-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes arrive-rise {
+  from {
+    translate: 0 var(--tf-motion-rise);
+  }
+}
+
+/* Every version replaces this block outright, so a fresh element lands each time
+   the writer runs another one past the sandbox and the arrival plays again.
+   What is animated is the arrival itself rather than a decoration standing in
+   for one — which is why nothing here loops: a block that pulsed would still be
+   moving long after the last version had landed. */
+.script {
+  animation:
+    arrive-fade var(--tf-motion-settle) var(--tf-motion-ease-fade),
+    arrive-rise var(--tf-motion-settle) var(--tf-motion-ease-move);
 }
 
 /* Code is content in this design, not an attachment inside a box: no

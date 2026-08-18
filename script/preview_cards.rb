@@ -55,18 +55,21 @@ def opened(question)
   chat
 end
 
-# A chat whose only trace of the writing is the call that asked the sandbox
-# about a version. Nothing has been settled, so the card reads as a draft.
+# The settled one is the older of the two, because a chat is only settled once
+# it has stopped being the one worth watching. Structured output lands in
+# content_raw, which is what tells the answer apart from the turns that only
+# called a tool.
+opened("下一場小聚是什麼時候").messages.create!(
+  role: "assistant", content_raw: { "script" => ANSWERED }
+)
+
+# The newest, and still being written: its only trace is the call that asked the
+# sandbox about a version. Nothing has settled, so the card reads as a draft —
+# and being newest, it is the one the page puts the focus on.
 drafted = opened("最近有哪些活動")
 drafted.messages.create!(role: "assistant").tool_calls.create!(
   tool_call_id: "preview-layout-check", name: LayoutCheckTool.new.name,
   arguments: { "script" => DRAFTED }
-)
-
-# A chat that settled. Structured output lands in content_raw, which is what
-# tells the answer apart from the turns that only called a tool.
-opened("下一場小聚是什麼時候").messages.create!(
-  role: "assistant", content_raw: { "script" => ANSWERED }
 )
 
 puts "#{Chat.count} chats — #{Chat.order(:created_at).map(&:state).join(", ")}"
