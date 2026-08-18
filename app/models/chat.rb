@@ -13,11 +13,13 @@ class Chat < ApplicationRecord
     ActionView::RecordIdentifier.dom_id(self, :script)
   end
 
-  # Where the writing has got to, as far as the record can say. A run that
-  # ended without a card leaves nothing behind that would say so, which is why
-  # the job says it out loud instead of this being read off the rows.
+  # What the block holds, rather than what is happening to it. A word about
+  # the writing goes stale the moment a run stops without saying so, and
+  # nothing here would ever come back to correct it — a card left calling
+  # itself checked is worse than one that only ever claimed to hold a draft.
+  # What did happen is said by the job, in the sentence the sender was given.
   def state
-    answer ? "Answered" : "Being checked"
+    answer ? "Answer" : "Draft"
   end
 
   def broadcast_card
