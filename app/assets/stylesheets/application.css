@@ -130,26 +130,10 @@ main {
    leading is kept out of it: the negative top margin hands back exactly the
    half-leading a taller line box adds above the glyphs. Being in em, the
    correction follows whichever step of the scale is in play. */
-h1,
 h2 {
   font-size: var(--text-heading);
   line-height: var(--leading-heading);
   margin: calc((1 - var(--leading-heading)) * 0.5em) 0 1rem;
-}
-
-/* The theme keeps the title step for chapter pages and gives a content page's
-   h1 the heading step. There is one page here and it is the whole of the demo,
-   so it is a chapter rather than a page inside one — and the step apart is also
-   what keeps the page's own title from reading as loud as the question each
-   card carries.
-
-   The theme spaces a title from a subtitle by 16 and a subtitle from the
-   content by 32. This page carries no subtitle, so the title is already against
-   the content and takes the wider of the two; at 16 it would sit closer to the
-   first card than the cards sit to each other and read as part of it. */
-h1 {
-  font-size: var(--text-title);
-  margin-bottom: 2rem;
 }
 
 /* Anything that can run to a second line takes the copy leading. */
