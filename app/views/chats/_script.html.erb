@@ -1,6 +1,6 @@
 <%# Replaced in place every time the writer produces another version, so this
     root element is what each broadcast aims at. %>
 <div id="<%= chat.script_id %>">
-  <p><%= chat.answer ? "Answered" : "Being checked" %></p>
+  <p><%= state %></p>
   <pre><%= chat.script %></pre>
 </div>

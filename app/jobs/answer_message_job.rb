@@ -26,7 +26,10 @@ class AnswerMessageJob < ApplicationJob
   def perform(reply_token:, text:, chat_id: nil)
     show_loading(chat_id)
 
-    reply(reply_token, message_for(card_for(text)))
+    result = card_for(text)
+    announce(result)
+
+    reply(reply_token, message_for(result))
   end
 
   private
@@ -42,10 +45,22 @@ class AnswerMessageJob < ApplicationJob
   # The script is untrusted the moment it comes back — nothing here reads it
   # before the sandbox does.
   def card_for(text)
-    LineFlex.render(FlexMessageAgent.create!.ask(text).content.fetch("script"))
+    @chat = FlexMessageAgent.create!
+    LineFlex.render(@chat.ask(text).content.fetch("script"))
   rescue StandardError => e
     logger.error("The layout could not be written: #{e.class}: #{e.message}")
     :unwritten
+  end
+
+  # The page has followed every version the writer produced, and this is the
+  # only way it hears that none of them became a card: nothing is written down
+  # when a run ends without one, so the last draft would simply stand there
+  # reading as a model still thinking. Whoever is watching is told what the
+  # sender was told, in the same words.
+  def announce(result)
+    sentence = sentence_for(result)
+
+    @chat&.broadcast_state(sentence) if sentence
   end
 
   # LINE's own answer to a reply that takes a moment. It is decoration on the
@@ -66,15 +81,23 @@ class AnswerMessageJob < ApplicationJob
   # purpose. A script the sandbox stopped is the point of the demo, so its
   # reason goes back to whoever triggered it. A layout that was never written
   # is an outside service having a bad day, and its detail belongs in the log.
-  def message_for(result)
+  #
+  # A card answers with nothing here, because there is no sentence to say
+  # about one that worked.
+  def sentence_for(result)
     case result
     when :unwritten
-      Line::Bot::V2::MessagingApi::TextMessage.new(text: "The layout could not be written.")
+      "The layout could not be written."
     when LineFlex::Failure
-      Line::Bot::V2::MessagingApi::TextMessage.new(text: "The script did not finish: #{result.reason}")
-    else
-      Line::Bot::V2::MessagingApi::FlexMessage.create(result)
+      "The script did not finish: #{result.reason}"
     end
+  end
+
+  def message_for(result)
+    sentence = sentence_for(result)
+    return Line::Bot::V2::MessagingApi::FlexMessage.create(result) if sentence.nil?
+
+    Line::Bot::V2::MessagingApi::TextMessage.new(text: sentence)
   end
 
   def reply(token, message)

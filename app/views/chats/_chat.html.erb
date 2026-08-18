@@ -1,4 +1,4 @@
 <article id="<%= dom_id(chat) %>">
   <h2><%= chat.question %></h2>
-  <%= render "chats/script", chat: chat %>
+  <%= render "chats/script", chat: chat, state: chat.state %>
 </article>

@@ -112,17 +112,20 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
 
   # The writer is an ordinary outside service. When it cannot answer, the
   # sender still gets something — a job that dies holding the reply token
-  # leaves them watching an animation that never resolves.
+  # leaves them watching an animation that never resolves. The page is in the
+  # same position: it has been following the writing and nothing written down
+  # would tell it the writing stopped.
   test "a layout that could not be written is still answered" do
     stub_request(:post, WRITER_URL).to_return(status: 500)
 
-    deliver(text_event)
+    pushed = capture_turbo_stream_broadcasts(:chats) { deliver(text_event) }
 
     assert_response :ok
     assert_requested(:post, REPLY_URL) do |request|
       message = JSON.parse(request.body)["messages"].first
       message["type"] == "text" && message["text"].include?("could not be written")
     end
+    assert_match "could not be written", pushed.last.text
   end
 
   test "the sender is shown a loading animation while the answer is prepared" do
@@ -142,16 +145,23 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
     assert_not_requested @loading
   end
 
+  # A settled script the sandbox then stops is the one outcome where the page
+  # would otherwise be wrong rather than merely silent: the answer is written
+  # down, so the card would call itself answered while the sender was told it
+  # never ran.
   test "a script the sandbox stopped is explained to whoever asked" do
     stopped = LineFlex::Failure.new(reason: :timeout, message: "guest exceeded its deadline")
 
-    LineFlex.stub(:render, stopped) { deliver(text_event) }
+    pushed = capture_turbo_stream_broadcasts(:chats) do
+      LineFlex.stub(:render, stopped) { deliver(text_event) }
+    end
 
     assert_response :ok
     assert_requested(:post, REPLY_URL) do |request|
       message = JSON.parse(request.body)["messages"].first
       message["type"] == "text" && message["text"].include?("timeout")
     end
+    assert_match "timeout", pushed.last.text
   end
 
   # A card the sandbox assembled can still break a rule that lives only at

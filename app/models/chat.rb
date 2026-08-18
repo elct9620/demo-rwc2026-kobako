@@ -13,16 +13,28 @@ class Chat < ApplicationRecord
     ActionView::RecordIdentifier.dom_id(self, :script)
   end
 
+  # Where the writing has got to, as far as the record can say. A run that
+  # ended without a card leaves nothing behind that would say so, which is why
+  # the job says it out loud instead of this being read off the rows.
+  def state
+    answer ? "Answered" : "Being checked"
+  end
+
   def broadcast_card
     broadcast_prepend_to :chats
+  end
+
+  def broadcast_script
+    broadcast_state(state)
   end
 
   # Sent where it happens rather than through a job. Every version replaces
   # the same block, and Solid Queue runs three threads — a broadcast that
   # arrives out of order would leave the card showing a version the writer has
   # already moved past.
-  def broadcast_script
-    broadcast_replace_to :chats, target: script_id, partial: "chats/script", locals: { chat: self }
+  def broadcast_state(state)
+    broadcast_replace_to :chats, target: script_id, partial: "chats/script",
+                                 locals: { chat: self, state: state }
   end
 
   # The one version this chat is showing: the answer once it is settled, and
