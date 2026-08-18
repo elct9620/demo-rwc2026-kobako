@@ -191,7 +191,7 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
   # has to land on that same version — a page and a push telling two different
   # stories is the one failure nobody watching could tell apart from a slow
   # model.
-  test "every version the writer produces reaches the page" do
+  test "the question, every version and the answer all reach the page" do
     stub_request(:post, WRITER_URL).to_return(
       { status: 200, body: asked_for(:layout_check, script: card_naming("first")), headers: JSON_TYPE },
       { status: 200, body: asked_for(:layout_check, script: card_naming("second")), headers: JSON_TYPE },
@@ -206,6 +206,7 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
     assert_match "answered", pushed[3].text
 
     get "/"
+    assert_match "cafe", response.body
     assert_match "answered", response.body
     # Where each push lands is named twice — once by the model, once by the
     # page — and a prepend that lands nowhere is invisible: the broadcast still

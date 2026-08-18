@@ -23,6 +23,7 @@
   --color-white: #ffffff;
   --color-gray-500: #7a7a7a;
   --color-kon-500: #0f2540; /* 紺 */
+  --color-gunJyo-500: #51a8dd; /* 群青 */
 
   /* The theme's five steps, each mapped to the Tailwind step nearest the ratio
      it holds on the canvas: 64/48/36/32/16 becomes 4xl/2xl/base/sm/xs. Body is
@@ -58,6 +59,9 @@
      dividing the canvas figure down. */
   --spacing-slash: 3rem;
 
+  /* The width the theme draws a stroke or a frame at. */
+  --spacing-line: 0.25rem;
+
   /* GitHub Light, which is what the design file specifies for code and what the
      theme hands Shiki. Five colours is the whole of it, so every token Rouge
      emits is sorted into one of them rather than reaching for a sixth. */
@@ -69,6 +73,7 @@
 
   /* What each value plays, kept apart from what it is, so recolouring reads as
      colour names and re-assigning roles reads as roles. */
+  --theme-primary: var(--color-gunJyo-500);
   --theme-neutral: var(--color-gray-500);
   --theme-text: var(--color-kon-500);
   --theme-surface: var(--color-kon-500);
@@ -130,10 +135,17 @@ main {
    leading is kept out of it: the negative top margin hands back exactly the
    half-leading a taller line box adds above the glyphs. Being in em, the
    correction follows whichever step of the scale is in play. */
-h2 {
-  font-size: var(--text-heading);
-  line-height: var(--leading-heading);
-  margin: calc((1 - var(--leading-heading)) * 0.5em) 0 1rem;
+/* What the sender typed, reproduced rather than written here. At the heading
+   step it read as the page's own name for the card, and a long message then
+   crowded out the script it was asked about; at the body step it wraps like the
+   sentence it is and stays the shorter half of the card however long it runs.
+   The rule down its left edge is the theme's own mark for a line that came from
+   somewhere else. */
+blockquote {
+  margin: 0 0 1rem;
+  padding-left: 1rem;
+  border-left: var(--spacing-line) solid var(--theme-primary);
+  line-height: var(--leading-body);
 }
 
 /* Anything that can run to a second line takes the copy leading. */
