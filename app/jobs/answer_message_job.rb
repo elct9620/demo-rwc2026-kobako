@@ -53,9 +53,9 @@ class AnswerMessageJob < ApplicationJob
   end
 
   # The page has followed every version the writer produced, and this is the
-  # only way it hears that none of them became a card: nothing is written down
-  # when a run ends without one, so the last draft would simply stand there
-  # reading as a model still thinking. Whoever is watching is told what the
+  # only way it hears that none of them became a card: a run that ends without
+  # one writes nothing down, so the page would be left holding a draft and no
+  # account of why it stopped being one. Whoever is watching is told what the
   # sender was told, in the same words.
   def announce(result)
     sentence = sentence_for(result)

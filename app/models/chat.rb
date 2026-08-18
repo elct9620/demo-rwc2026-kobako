@@ -13,11 +13,11 @@ class Chat < ApplicationRecord
     ActionView::RecordIdentifier.dom_id(self, :script)
   end
 
-  # What the block holds, rather than what is happening to it. A word about
-  # the writing goes stale the moment a run stops without saying so, and
-  # nothing here would ever come back to correct it — a card left calling
-  # itself checked is worse than one that only ever claimed to hold a draft.
-  # What did happen is said by the job, in the sentence the sender was given.
+  # What the block holds, rather than what is happening to it. A label naming
+  # an activity goes stale the moment a run stops without saying so, and
+  # nothing here would come back to correct it; a draft is a draft whether or
+  # not anyone is still working on it. What did happen is said by the job, in
+  # the sentence the sender was given.
   def state
     answer ? "Answer" : "Draft"
   end
