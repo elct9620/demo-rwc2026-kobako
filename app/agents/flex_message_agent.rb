@@ -31,7 +31,7 @@ class FlexMessageAgent < RubyLLM::Agent
   # read. Fields are also what keep prose, apologies and code fences out of
   # what the sandbox is handed.
   schema do
-    string :reasoning, description: "What the asker most likely wants, what the search returned, and why the card is arranged as it is."
+    string :reasoning, description: "What the asker most likely wants, what the search returned, and why the card is arranged as it is. Written in English whatever language the question came in — the card is what is answered in the asker's, and this is read beside it rather than by them."
     string :script, description: "The layout script, ready to evaluate exactly as it stands."
   end
 end
