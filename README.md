@@ -150,6 +150,7 @@ anyone who has the URL.
 | `line-message-builder` | The Flex DSL the script speaks; the builder stays host-side |
 | `line-bot-api` | Verifies each delivery and carries the reply |
 | `ruby_llm` | Writes the layout script, and keeps the chat it was written in |
+| `rouge` | Colours the script where it is rendered, so a version arrives coloured |
 | `nokogiri` | Reads the Atom and RSS the event and video feeds answer with |
 
 Kobako ships precompiled gems for macOS and 64-bit Linux, so installing it there

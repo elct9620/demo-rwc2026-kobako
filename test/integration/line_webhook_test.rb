@@ -214,6 +214,24 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
     assert_select "#chats ##{Chat.sole.script_id}"
   end
 
+  # The script is untrusted wherever it goes, and the page is the one place it
+  # arrives as markup rather than as a value. Being written by a model changes
+  # nothing about that: whatever the writer settles on has to read as the text
+  # of a script and never as a tag of the page's own.
+  test "a script carrying markup reaches the page as text" do
+    stub_request(:post, WRITER_URL).to_return(
+      status: 200,
+      body: written(card_naming("<script>alert(1)</script>")),
+      headers: JSON_TYPE
+    )
+
+    deliver(text_event)
+
+    get "/"
+    assert_no_match "<script>alert(1)</script>", response.body
+    assert_match "&lt;script&gt;alert(1)&lt;/script&gt;", response.body
+  end
+
   test "a delivery signed with the wrong key is refused before anything is parsed" do
     deliver(text_event, signature: "not-the-signature")
 

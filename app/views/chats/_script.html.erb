@@ -2,5 +2,5 @@
     root element is what each broadcast aims at. %>
 <div id="<%= chat.script_id %>">
   <p><%= state %></p>
-  <pre><%= chat.script %></pre>
+  <pre><code><%= highlighted(chat.script) %></code></pre>
 </div>

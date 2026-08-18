@@ -57,6 +57,15 @@
      dividing the canvas figure down. */
   --spacing-slash: 3rem;
 
+  /* GitHub Light, which is what the design file specifies for code and what the
+     theme hands Shiki. Five colours is the whole of it, so every token Rouge
+     emits is sorted into one of them rather than reaching for a sixth. */
+  --code-text: #24292e;
+  --code-keyword: #d73a49;
+  --code-function: #6f42c1;
+  --code-constant: #005cc5;
+  --code-comment: #6a737d;
+
   /* What each value plays, kept apart from what it is, so recolouring reads as
      colour names and re-assigning roles reads as roles. */
   --theme-text: var(--color-kon-500);
@@ -155,9 +164,53 @@ code {
   font-family: var(--font-mono);
   font-size: var(--text-body);
   line-height: var(--leading-body);
+  color: var(--code-text);
 }
 
 pre {
   margin: 0;
   white-space: pre-wrap;
+}
+
+/* Rouge's token classes, sorted into the five colours the design file names.
+   Anything not listed keeps the foreground, which is where a token the palette
+   has no opinion about belongs. They are scoped to pre rather than given a
+   wrapper class, because names this short would otherwise be one word away from
+   colliding with something else on the page. */
+pre .k,
+pre .kc,
+pre .kd,
+pre .kn,
+pre .kp,
+pre .kr,
+pre .kt,
+pre .o,
+pre .ow {
+  color: var(--code-keyword);
+}
+
+pre .nb,
+pre .nc,
+pre .nf {
+  color: var(--code-function);
+}
+
+pre .m,
+pre .mf,
+pre .mi,
+pre .no,
+pre .s,
+pre .s1,
+pre .s2,
+pre .se,
+pre .si,
+pre .sr,
+pre .ss {
+  color: var(--code-constant);
+}
+
+pre .c,
+pre .c1,
+pre .cm {
+  color: var(--code-comment);
 }

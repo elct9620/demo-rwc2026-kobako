@@ -25,6 +25,9 @@ gem "line-message-builder"
 gem "line-bot-api"
 # Ask an LLM for the layout script the sandbox evaluates [https://github.com/crmne/ruby_llm]
 gem "ruby_llm"
+# Colour the script where it is rendered, so a version arriving over Action
+# Cable is already highlighted instead of being repainted after it lands
+gem "rouge"
 # Read the Atom and RSS the event and video feeds answer with. Rails already
 # depends on it through the HTML sanitizer; naming it here is what makes it
 # something this app may require rather than something it happens to find.
