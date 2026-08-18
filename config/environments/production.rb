@@ -24,8 +24,12 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
-  # Assume all access to the app is happening through a SSL-terminating reverse proxy.
-  # config.assume_ssl = true
+  # A Cloudflare Tunnel terminates TLS and forwards plain HTTP, and whether it
+  # says so in a header is not something to rely on. Without this the app reads
+  # its own scheme as http, and Action Cable refuses the WebSocket because the
+  # browser's `https://` Origin no longer matches — which shows up as a page
+  # that simply never updates.
+  config.assume_ssl = true
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   # config.force_ssl = true
