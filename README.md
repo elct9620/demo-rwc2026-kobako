@@ -65,9 +65,9 @@ a decision about the answer. Printing the rows is what a template does, and a
 template needs no sandbox: the boundary is only worth its cost when the layout
 is code written to answer something.
 
-A card names an event but does not link to it. The vocabulary lends two
-actions, `message` and `postback`, and neither opens a URL — so a link on a
-card would be a string nobody can tap, and the tool does not return one. The
+A card names an event but does not link to it. The vocabulary lends one
+action, `message`, and it does not open a URL — so a link on a card would be
+a string nobody can tap, and the tool does not return one. The
 builder has a `uri` action; it is left out because what this demo shows is a
 layout written as code, and tapping through to a page is not part of that.
 

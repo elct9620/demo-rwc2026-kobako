@@ -11,7 +11,7 @@ module LineFlex
     alt_text bubble carousel
     header hero hero_image body footer
     box text button image icon separator span
-    message postback
+    message
   ].freeze
 
   # Asking for the assembled message is not something a script writes, so it

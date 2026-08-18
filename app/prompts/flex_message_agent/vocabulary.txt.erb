@@ -50,10 +50,9 @@ class Text
   def span: (String, ?size: Symbol, ?color: String, ?weight: Symbol, ?decoration: Symbol) -> void
 end
 
-# A button is empty without one of these, and these two are the whole of what
-# a tap can do — neither opens a link.
+# A button is empty without one, and this is the whole of what a tap can do —
+# it does not open a link.
 class Button
   def message: (String text, ?label: String) -> void
-  def postback: (String data, ?label: String, ?display_text: String) -> void
 end
 ```
