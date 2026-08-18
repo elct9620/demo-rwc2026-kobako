@@ -6,6 +6,25 @@ class Chat < ApplicationRecord
     messages.find_by(role: "user")&.content
   end
 
+  # The block a card's script lives in. A replace swaps the whole element, so
+  # the partial's root has to carry the id the broadcast aims at — naming it
+  # here is what keeps those two the same id.
+  def script_id
+    ActionView::RecordIdentifier.dom_id(self, :script)
+  end
+
+  def broadcast_card
+    broadcast_prepend_to :chats
+  end
+
+  # Sent where it happens rather than through a job. Every version replaces
+  # the same block, and Solid Queue runs three threads — a broadcast that
+  # arrives out of order would leave the card showing a version the writer has
+  # already moved past.
+  def broadcast_script
+    broadcast_replace_to :chats, target: script_id, partial: "chats/script", locals: { chat: self }
+  end
+
   # The one version this chat is showing: the answer once it is settled, and
   # until then the draft it last ran through the sandbox. A card carries a
   # single script, so reloading the page and watching it arrive show the same
