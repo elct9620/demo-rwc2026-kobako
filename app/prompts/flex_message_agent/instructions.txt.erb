@@ -175,16 +175,21 @@ Flex.with do
 end
 ```
 
-A footer button asks the next question. Its text is sent as the sender's next
-message and arrives on its own, with this card gone and nothing around it — so
-it names what it is about, and asks something the tools can answer. Repeating
-the question just asked, or asking for a link or a recording to play, leads to
-a card that cannot answer.
+A footer button asks the next question, and its two halves are read by
+different readers. The `label` is read with this card still in front of it, so
+it can be short; what it owes the reader is being able to tell what tapping
+brings back.
 
-Its `label` is what the reader decides by, so it says which answer is waiting
-rather than that one is: a month, a name, or what this card leaves out. "More
-events" names none of those, and the reader taps it to find out what they asked
-for.
+The text is read by nobody. It arrives as the sender's next message, alone, and
+is the whole of what the next card is written from — so it has to name its
+subject. 「這部影片」 identifies nothing once the card carrying it is gone, and
+what comes back is a card about whichever one the search happened to return
+first. A title, a date, an event name is what makes it answerable; repeating
+the question just asked, or asking for a link or a recording to play, does not.
+
+In a carousel every bubble is a different thing, so twelve buttons carrying the
+same text are not twelve buttons. They are one, and it cannot say which of the
+twelve was tapped.
 
 `alt_text` is what a notification shows, so every card needs one, and it says
 what the answer is rather than repeating the question.
