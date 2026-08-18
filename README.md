@@ -57,7 +57,9 @@ coming up" is today read forwards. A tool that insisted on a keyword answered
 neither, and the second had a tool of its own for want of one — which shaped
 the vocabulary around a situation rather than around the record. What did not
 fit under the limit comes back as a count, since a truncated list nobody
-flagged reads as the whole of it.
+flagged reads as the whole of it; an `offset` reads the same filter on from
+where it stopped, so that count says how far there is left to go rather than
+only that there is more.
 
 The card is not that list. What the tool returns is material the answer is
 written from — rewritten, merged, left out — and how many bubbles it takes is
