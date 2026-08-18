@@ -21,6 +21,7 @@
 :root {
   /* Traditional Japanese colours, named after the colour rather than its use. */
   --color-white: #ffffff;
+  --color-gray-500: #7a7a7a;
   --color-kon-500: #0f2540; /* 紺 */
 
   /* The theme's five steps, each mapped to the Tailwind step nearest the ratio
@@ -68,6 +69,7 @@
 
   /* What each value plays, kept apart from what it is, so recolouring reads as
      colour names and re-assigning roles reads as roles. */
+  --theme-neutral: var(--color-gray-500);
   --theme-text: var(--color-kon-500);
   --theme-surface: var(--color-kon-500);
   --theme-on-surface: var(--color-white);
@@ -154,6 +156,18 @@ h1 {
 p,
 li {
   line-height: var(--leading-body);
+}
+
+/* What a card holds — a draft, or the answer it settled on. It annotates the
+   block rather than being part of it, so it takes the sub-label step and the
+   neutral colour instead of standing at the size of what it labels. The line
+   cannot wrap, so its line box equals its type size and the gap below it is the
+   whole of the space between the two. */
+.state {
+  margin: 0 0 1rem;
+  font-size: var(--text-sub);
+  line-height: var(--leading-none);
+  color: var(--theme-neutral);
 }
 
 /* Code is content in this design, not an attachment inside a box: no
