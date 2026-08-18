@@ -12,7 +12,7 @@ LINE ──▶ POST /webhook ──▶ signature ──▶ enqueue ──▶ 200
                                             │
                         search_entries ──▶ entries
                                             │
-                                  Kobako (wasm sandbox)  ◀── layout_check
+                                  Kobako (wasm sandbox)  ◀── layout_check ──▶ GET /
                                             │
                         line-message-builder, held on the host
                                             │
@@ -102,6 +102,8 @@ rows and leaves the other two alone.
 | `config/recurring.yml` | When each source is read, in the zone it says |
 | `app/controllers/webhooks_controller.rb` | Where a delivery arrives and is verified |
 | `app/jobs/answer_message_job.rb` | Where the card is built and the reply leaves |
+| `app/models/chat.rb` | What one card shows, and the block every version replaces |
+| `app/views/chats/` | The page the writing is watched on |
 | `app/tools/` | The two things the writer may ask for: one into the table, one into the sandbox |
 | `app/agents/flex_message_agent.rb` | Who writes the script, and what it is allowed to answer with |
 | `app/prompts/flex_message_agent/` | The brief, and the RBS it hands over as the vocabulary |
@@ -124,6 +126,21 @@ actually executed.
 Each message opens its own chat, and the chat is kept: what was asked and what
 was answered land in the SQLite database beside everything else, which is one
 more place the sender's words live and is deleted with the namespace.
+
+## Watching it being written
+
+The card is the end of the writing, and `GET /` is the same answer while it is
+still being made. One card per chat, holding one script: replaced by every
+version the writer runs through `layout_check`, and a last time by the answer it
+settles on. Each version is pushed over Action Cable as it lands, so the page
+follows the writing rather than polling for it.
+
+Three things reach the page and nothing else does — the question, each version
+checked, and the answer. The brief is the same on every chat, what the writer
+looked up is material rather than layout, and the empty row a turn starts as is
+not a version of anything. So the page shows what the sandbox was asked about,
+not a transcript of the exchange. It does show the question as it was sent, to
+anyone who has the URL.
 
 ## The parts
 
