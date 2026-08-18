@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Dynamic Flex Message" %></title>
+    <%# The demo has one page, so the title names the demo rather than the page
+        and no view overrides it. %>
+    <title>Kobako - RWC2026 Demo</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Dynamic Flex Message">
+    <meta name="application-name" content="Kobako - RWC2026 Demo">
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>

@@ -1,7 +1,3 @@
-<%# The tab is the only place the page names itself: the header already says
-    what this is, and a heading repeating it would be the same sentence twice. %>
-<% content_for :title, "Writing the card" %>
-
 <%= turbo_stream_from :chats %>
 <div id="chats">
   <%= render @chats %>
