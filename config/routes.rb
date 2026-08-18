@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   # Where LINE delivers the messages this demo answers.
   post "webhook" => "webhooks#create"
 
-  # Defines the root path route ("/")
-  # root "posts#index"
+  # Where the writing is watched. The card LINE receives is the end of it; this
+  # is the same answer being assembled, a version at a time.
+  root "chats#index"
 end

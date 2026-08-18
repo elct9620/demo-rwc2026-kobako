@@ -1,0 +1,6 @@
+<%# Replaced in place every time the writer produces another version, so the
+    id here is what each broadcast aims at and has to survive the swap. %>
+<div id="<%= dom_id(chat, :script) %>">
+  <p><%= chat.answer ? "Answered" : "Being checked" %></p>
+  <pre><%= chat.script %></pre>
+</div>

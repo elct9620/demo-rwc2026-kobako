@@ -1,0 +1,8 @@
+<% content_for :title, "Writing the card" %>
+
+<h1>Writing the card</h1>
+
+<%= turbo_stream_from :chats %>
+<div id="chats">
+  <%= render @chats %>
+</div>
