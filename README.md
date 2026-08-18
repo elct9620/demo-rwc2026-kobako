@@ -104,6 +104,7 @@ rows and leaves the other two alone.
 | `app/jobs/answer_message_job.rb` | Where the card is built and the reply leaves |
 | `app/models/chat.rb` | What one card shows, and the block every version replaces |
 | `app/views/chats/` | The page the writing is watched on |
+| `app/assets/stylesheets/application.css` | How it looks: the slide theme's design system, at the size a browser reads |
 | `app/tools/` | The two things the writer may ask for: one into the table, one into the sandbox |
 | `app/agents/flex_message_agent.rb` | Who writes the script, and what it is allowed to answer with |
 | `app/prompts/flex_message_agent/` | The brief, and the RBS it hands over as the vocabulary |
