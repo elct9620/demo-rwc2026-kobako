@@ -1,10 +1,111 @@
 /*
- * This is a manifest file that'll be compiled into application.css.
+ * The slide theme's design system, at web scale.
  *
- * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
- * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
- * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
- * depending on specificity.
+ * The values come from slidev-theme-terraforming, which draws on a 1920x1080
+ * canvas: its body copy is 36px because it is read from the back of a room.
+ * This page is read in a browser, so the roles are kept and the measurements
+ * are not — every step lands on a Tailwind scale step with a 16px base, which
+ * is the same regularity the theme and blog.aotoki.me are already built on.
  *
- * Consider organizing styles into separate files for maintainability.
+ * One file rather than several: Propshaft rewrites `url(...)` and nothing else,
+ * so a bare `@import "tokens.css"` would ask the browser for an undigested path
+ * that the static resolver does not serve.
+ *
+ * A role arrives with whatever consumes it, so the palette and the motion scale
+ * are here only as far as this page reads them — the rest stays in the theme
+ * rather than becoming a second, unexercised copy. The type scale is the
+ * exception: it is carried whole, because a scale with holes in it stops being
+ * one and the next element then invents a size instead of picking a step.
  */
+
+:root {
+  /* Traditional Japanese colours, named after the colour rather than its use. */
+  --color-white: #ffffff;
+  --color-kon-500: #0f2540; /* 紺 */
+
+  /* The theme's five steps, each mapped to the Tailwind step nearest the ratio
+     it holds on the canvas: 64/48/36/32/16 becomes 4xl/2xl/base/sm/xs. Body is
+     the base unit, so the page is read at the size everything else is measured
+     from. */
+  --text-title: 2.25rem; /* 36 */
+  --text-heading: 1.5rem; /* 24 */
+  --text-body: 1rem; /* 16 */
+  --text-sub: 0.875rem; /* 14 */
+  --text-note: 0.75rem; /* 12 */
+
+  /* Leading answers a question about the text rather than about its size.
+     `body` is for anything that may wrap; `heading` sits below it and hands the
+     extra back through a negative margin, so a one-line heading still lands
+     where the design file's 100% put it. */
+  --leading-heading: 1.25;
+  --leading-body: 1.5;
+
+  /* Futura has no CJK glyphs, so a CJK face after it satisfies both from one
+     stack. All system faces, so no webfont is fetched. The theme reaches for
+     JetBrains Mono through Slidev's own font handling, which this app has no
+     equivalent of — asking a CDN for it would be a dependency the demo does
+     not need to show what it is showing. */
+  --font-sans: "Futura", "Futura PT", "PingFang TC", "LiHei Pro", "Heiti TC",
+    "Microsoft JhengHei", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+
+  /* The diagonal the theme cuts beside its sidebar. blog.aotoki.me already
+     answers what it measures at web scale, and this follows it rather than
+     dividing the canvas figure down. */
+  --spacing-slash: 3rem;
+
+  /* What each value plays, kept apart from what it is, so recolouring reads as
+     colour names and re-assigning roles reads as roles. */
+  --theme-text: var(--color-kon-500);
+  --theme-surface: var(--color-kon-500);
+  --theme-on-surface: var(--color-white);
+}
+
+body {
+  margin: 0;
+  background: var(--color-white);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  color: var(--theme-text);
+}
+
+/* Vertical rhythm is stated as margins so it can be read off directly, and the
+   leading is kept out of it: the negative top margin hands back exactly the
+   half-leading a taller line box adds above the glyphs. Being in em, the
+   correction follows whichever step of the scale is in play. */
+h1,
+h2 {
+  font-size: var(--text-heading);
+  line-height: var(--leading-heading);
+  margin: calc((1 - var(--leading-heading)) * 0.5em) 0 1rem;
+}
+
+/* The theme keeps the title step for chapter pages and gives a content page's
+   h1 the heading step. There is one page here and it is the whole of the demo,
+   so it is a chapter rather than a page inside one — and the step apart is also
+   what keeps the page's own title from reading as loud as the question each
+   card carries. */
+h1 {
+  font-size: var(--text-title);
+}
+
+/* Anything that can run to a second line takes the copy leading. */
+p,
+li {
+  line-height: var(--leading-body);
+}
+
+/* Code is content in this design, not an attachment inside a box: no
+   background, no radius, no padding. It wraps rather than running off the
+   page, because nothing here can be scrolled to from the back of a room. */
+pre,
+code {
+  font-family: var(--font-mono);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+}
+
+pre {
+  margin: 0;
+  white-space: pre-wrap;
+}
