@@ -45,6 +45,25 @@ class LayoutCheckToolTest < ActiveSupport::TestCase
     assert_not_includes answer, "does not lend"
   end
 
+  # The one mistake that used to pass every boundary and surface only as a card
+  # missing what was asked for. It reaches the writer now, and it arrives with
+  # the keywords that component would have taken instead.
+  test "a keyword a component does not take comes back with the ones it does" do
+    answer = LayoutCheckTool.new.execute(script: <<~MRUBY)
+      Flex.with do
+        alt_text "Brown Cafe"
+        bubble do
+          body layout: :vertical do
+            text "10:00 - 23:00", emphasis: :loud
+          end
+        end
+      end
+    MRUBY
+
+    assert_match(/emphasis/, answer)
+    assert_match(/wrap/, answer)
+  end
+
   test "a script that never returns is told what it may not do" do
     answer = LayoutCheckTool.new.execute(script: "while true; end")
 
