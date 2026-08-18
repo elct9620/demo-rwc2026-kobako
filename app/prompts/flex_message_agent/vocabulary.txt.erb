@@ -30,24 +30,22 @@ class Bubble
 end
 
 # What goes inside a section. `layout` is :vertical, :horizontal or :baseline,
-# and a :baseline box holds `text` alone — a thumbnail beside a title is a
-# :horizontal box. That one is LINE's rule and not the builder's: nothing here
-# refuses it, and LINE refuses the whole reply.
+# and a :baseline box holds `text` and `icon` alone — a thumbnail beside a
+# title is a :horizontal box. That one is LINE's rule and not the builder's:
+# nothing here refuses it, and LINE refuses the whole reply.
 class Box
   def box: (?layout: Symbol, ?spacing: Symbol, ?margin: Symbol, ?flex: Integer) { () [self: Box] -> void } -> void
-  # `wrap` is false where it is not passed, and a line that does not wrap is cut
-  # off with an ellipsis rather than carried onto a second one. Anything that
-  # can run past the width of a card says `wrap: true`.
-  def text: (?String text, ?wrap: bool, ?weight: Symbol, ?size: Symbol, ?color: String, ?align: Symbol, ?margin: Symbol, ?flex: Integer) ?{ () [self: Text] -> void } -> void
+  # `wrap` is false unless passed, and a line that does not wrap is cut off
+  # with an ellipsis rather than carried onto a second one.
+  def text: (?String text, ?wrap: bool, ?weight: Symbol, ?size: Symbol, ?color: String, ?align: Symbol, ?margin: Symbol, ?flex: Integer, ?max_lines: Integer) ?{ () [self: Text] -> void } -> void
   def button: (?style: Symbol, ?height: Symbol, ?margin: Symbol, ?flex: Integer) { () [self: Button] -> void } -> void
   def image: (String url, ?size: Symbol, ?aspect_ratio: String, ?aspect_mode: Symbol, ?margin: Symbol) -> void
-  # Takes nothing: the builder spells a separator as its type and no more.
-  def separator: () -> void
+  def icon: (String url, ?size: Symbol, ?margin: Symbol) -> void
+  def separator: (?margin: Symbol, ?color: String) -> void
 end
 
-# A `text` given a block instead of a string, which is how one line carries
-# runs that look different from each other. A line with one look throughout
-# needs none of this — it says `weight:` on the `text` itself.
+# A `text` given a block instead of a string, so one line can carry runs that
+# differ from each other. One look throughout says `weight:` on the `text`.
 class Text
   def span: (String, ?size: Symbol, ?color: String, ?weight: Symbol, ?decoration: Symbol) -> void
 end

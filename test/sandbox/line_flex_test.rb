@@ -11,7 +11,7 @@ class LineFlexTest < ActiveSupport::TestCase
             span "Brown Cafe", weight: :bold, size: :xl
           end
           box layout: :baseline, spacing: :sm do
-            text "Time", color: "#aaaaaa", size: :sm, flex: 1
+            icon "https://example.com/clock.png", size: :sm
             text "10:00 - 23:00", wrap: true, color: "#666666", size: :sm, flex: 5
           end
         end

@@ -10,7 +10,7 @@ module LineFlex
   VERBS = %i[
     alt_text bubble carousel
     header hero hero_image body footer
-    box text button image separator span
+    box text button image icon separator span
     message postback
   ].freeze
 
