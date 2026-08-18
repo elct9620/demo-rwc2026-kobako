@@ -25,6 +25,7 @@
   --color-gray-500: #7a7a7a;
   --color-kon-500: #0f2540; /* 紺 */
   --color-gunJyo-500: #51a8dd; /* 群青 */
+  --color-jinZamOmi-500: #eb7a77; /* 甚三紅 */
 
   /* The theme's five steps, each mapped to the Tailwind step nearest the ratio
      it holds on the canvas: 64/48/36/32/16 becomes 4xl/2xl/base/sm/xs. Body is
@@ -59,8 +60,10 @@
      dividing the canvas figure down. */
   --spacing-slash: 3rem;
 
-  /* The width the theme draws a stroke or a frame at. */
+  /* The width the theme draws a stroke or a frame at, and how far a block's
+     shadow falls down and to the right of it. */
   --spacing-line: 0.25rem;
+  --spacing-shadow: 0.25rem;
 
   /* How long a change takes is a question about the change rather than about
      what is changing. `travel` is for something moving or resizing, which has
@@ -97,6 +100,7 @@
      moment here — a card is current for as long as it is the newest, so an
      accent used for it would be on screen permanently and stop being one. */
   --theme-primary: var(--color-gunJyo-500);
+  --theme-accent: var(--color-jinZamOmi-500);
   --theme-neutral: var(--color-gray-500);
   --theme-text: var(--color-kon-500);
   --theme-surface: var(--color-kon-500);
@@ -204,18 +208,38 @@ blockquote {
    neutral colour instead of standing at the size of what it labels. The line
    cannot wrap, so its line box equals its type size and the gap below it is the
    whole of the space between the two. */
+/* Drawn the way the theme draws a block: a right-angled panel of flat colour
+   with a shadow of its own hue at 40%, offset down and to the right and never
+   softened. The fill is held in one property so the shadow derives from it —
+   a state added later then needs one declaration rather than a matching pair.
+   It leads the card because it is the part that changes, and it is a box rather
+   than a coloured word because a word at this size is not legible across a
+   room. */
 .state {
+  --state-fill: var(--theme-neutral);
+
+  display: inline-block;
   margin: 0 0 1rem;
+  padding: 0.25rem 0.75rem;
+  background: var(--state-fill);
+  box-shadow: var(--spacing-shadow) var(--spacing-shadow) 0 0
+    color-mix(in srgb, var(--state-fill) 40%, transparent);
+  color: var(--color-white);
   font-size: var(--text-sub);
   line-height: var(--leading-none);
-  color: var(--theme-neutral);
 }
 
-/* A draft is a version the writer is still working against, so it is said in
-   the page's own colour. An answer has settled and goes back to being an
-   annotation, which is what the neutral is for. */
+/* Three states, and the theme already says what each colour means. A draft is
+   the one being written, so it takes the page's own colour. An answer has
+   settled and goes back to the neutral. An error is the exception, which is
+   where the accent belongs — it is on screen only when something went wrong,
+   which is the whole difference between an accent and a decoration. */
 .state[data-state="Draft"] {
-  color: var(--theme-primary);
+  --state-fill: var(--theme-primary);
+}
+
+.state[data-state="Error"] {
+  --state-fill: var(--theme-accent);
 }
 
 /* What happened, in the words the sender was given. It stands beside the state
@@ -243,12 +267,15 @@ blockquote {
   }
 }
 
-/* Every version replaces this block outright, so a fresh element lands each time
+/* Every version replaces the block outright, so a fresh element lands each time
    the writer runs another one past the sandbox and the arrival plays again.
    What is animated is the arrival itself rather than a decoration standing in
    for one — which is why nothing here loops: a block that pulsed would still be
-   moving long after the last version had landed. */
-.script {
+   moving long after the last version had landed.
+   Only the script arrives. The question came with the card and is replaced
+   alongside it, and fading it back in on every version would read as the sender
+   asking again. */
+pre {
   animation:
     arrive-fade var(--tf-motion-settle) var(--tf-motion-ease-fade),
     arrive-rise var(--tf-motion-settle) var(--tf-motion-ease-move);

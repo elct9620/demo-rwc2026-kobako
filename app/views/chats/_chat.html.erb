@@ -1,6 +1,3 @@
 <article id="<%= dom_id(chat) %>">
-  <%# Reproduced, not authored — a heading here would give the page's own voice
-      to words the sender typed. %>
-  <blockquote><%= chat.question %></blockquote>
   <%= render "chats/script", chat: chat, state: chat.state %>
 </article>

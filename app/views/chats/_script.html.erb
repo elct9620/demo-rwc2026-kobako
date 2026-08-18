@@ -2,11 +2,19 @@
 <%# Replaced in place every time the writer produces another version, so this
     root element is what each broadcast aims at. `state` is one of three words
     and nothing else — what happened is a sentence, and a sentence handed to the
-    state would name a state nothing recognises. %>
-<div id="<%= chat.script_id %>" class="script">
+    state would name a state nothing recognises.
+
+    The state leads because it is the part that changes; the question was asked
+    once and is here so that a card reads as an exchange rather than as a
+    listing. It sits inside the replaced block for the same reason the state
+    does: the state has to come before it, and only one element is aimed at. %>
+<div id="<%= chat.script_id %>">
   <p class="state" data-state="<%= state %>"><%= state %></p>
   <% if note.present? %>
     <p class="note"><%= note %></p>
   <% end %>
+  <%# Reproduced, not authored — a heading here would give the page's own voice
+      to words the sender typed. %>
+  <blockquote><%= chat.question %></blockquote>
   <pre><code><%= highlighted(chat.script) %></code></pre>
 </div>
