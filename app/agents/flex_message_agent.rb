@@ -24,10 +24,14 @@ class FlexMessageAgent < RubyLLM::Agent
   # generation; the initializer says why.
   thinking effort: "medium"
 
-  # One field, because the whole answer is the script. Structured output is
-  # what keeps prose, apologies and code fences out of what the sandbox is
-  # handed.
+  # The script is the whole answer, and the field ahead of it is what has to be
+  # settled before one can be written. Structured output is produced in the
+  # order the fields are declared, so asking for the reasoning first is what
+  # stops a card being laid out before the material it answers from has been
+  # read. Fields are also what keep prose, apologies and code fences out of
+  # what the sandbox is handed.
   schema do
+    string :reasoning, description: "What the asker most likely wants, what the search returned, and why the card is arranged as it is."
     string :script, description: "The layout script, ready to evaluate exactly as it stands."
   end
 end
