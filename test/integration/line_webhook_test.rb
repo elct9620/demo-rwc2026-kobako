@@ -1,6 +1,11 @@
 require "test_helper"
+# Turbo only installs this where Action Cable is already loaded when the test
+# case is, which a test run of this app is not.
+require "turbo/broadcastable/test_helper"
 
 class LineWebhookTest < ActionDispatch::IntegrationTest
+  include Turbo::Broadcastable::TestHelper
+
   CHANNEL_SECRET = "channel-secret-for-tests"
   CHANNEL_ENV = {
     "LINE_CHANNEL_SECRET" => CHANNEL_SECRET,
@@ -170,6 +175,30 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
     assert_match "/message/contents/body/contents/0", log
   end
 
+  # The page is the other thing a delivery causes, and what it shows is not the
+  # card but the writing: one block, replaced by every version the writer runs
+  # through the sandbox and a last time by the answer it settles on. Reloading
+  # has to land on that same version — a page and a push telling two different
+  # stories is the one failure nobody watching could tell apart from a slow
+  # model.
+  test "every version the writer produces reaches the page" do
+    stub_request(:post, WRITER_URL).to_return(
+      { status: 200, body: asked_for(:layout_check, script: card_naming("first")), headers: JSON_TYPE },
+      { status: 200, body: asked_for(:layout_check, script: card_naming("second")), headers: JSON_TYPE },
+      { status: 200, body: written(card_naming("answered")), headers: JSON_TYPE }
+    )
+
+    pushed = capture_turbo_stream_broadcasts(:chats) { deliver(text_event) }
+
+    assert_equal %w[prepend replace replace replace], pushed.map { |element| element["action"] }
+    assert_match "first", pushed[1].text
+    assert_match "second", pushed[2].text
+    assert_match "answered", pushed[3].text
+
+    get "/"
+    assert_match "answered", response.body
+  end
+
   test "a delivery signed with the wrong key is refused before anything is parsed" do
     deliver(text_event, signature: "not-the-signature")
 
@@ -218,7 +247,14 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
   # An assistant turn that calls a tool instead of answering. What the writer
   # asks for is its own decision in production, so a test that wants the loop
   # walked has to make that decision for it.
+  #
+  # Each call is numbered because the ids a model mints are unique and the
+  # column holding them says so. A test reaching for the same tool twice with
+  # one id has the second call dropped, which reads as a writer that stopped
+  # asking.
   def asked_for(tool, **arguments)
+    @asked = (@asked || 0) + 1
+
     {
       id: "chatcmpl-for-tests",
       model: "gpt-5-mini",
@@ -230,7 +266,7 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
             content: nil,
             tool_calls: [
               {
-                id: "call-for-tests",
+                id: "call-for-tests-#{@asked}",
                 type: "function",
                 function: { name: tool.to_s, arguments: arguments.to_json }
               }
