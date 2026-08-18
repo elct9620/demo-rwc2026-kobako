@@ -237,6 +237,34 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
     assert_match "&lt;script&gt;alert(1)&lt;/script&gt;", response.body
   end
 
+  # The one failure that arrives with everything else already done: the script
+  # is written down, the page is showing it as the answer, and the sender has
+  # watched an animation resolve into nothing. Both of them have to hear that a
+  # card was assembled and then not shown, or the run reads as a success to
+  # everyone except the log.
+  test "a card LINE would not show is explained to the page and to whoever asked" do
+    stub_request(:post, REPLY_URL).to_return(
+      {
+        status: 400,
+        body: {
+          message: "The request body has 1 error(s)",
+          details: [ { message: "may not be used in a baseline box", property: "/footer/contents/0" } ]
+        }.to_json,
+        headers: JSON_TYPE
+      },
+      { status: 200, body: { sentMessages: [] }.to_json, headers: JSON_TYPE }
+    )
+
+    pushed = capture_turbo_stream_broadcasts(:chats) { deliver(text_event) }
+
+    assert_match %(data-state="Error"), pushed.last.to_html
+    assert_match "may not be used in a baseline box", pushed.last.text
+    assert_requested(:post, REPLY_URL) do |request|
+      message = JSON.parse(request.body)["messages"].first
+      message["type"] == "text" && message["text"].include?("would not show the card")
+    end
+  end
+
   test "a delivery signed with the wrong key is refused before anything is parsed" do
     deliver(text_event, signature: "not-the-signature")
 

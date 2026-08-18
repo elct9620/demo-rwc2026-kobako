@@ -2,9 +2,14 @@
 # running it takes as long as it takes, so it happens here rather than in the
 # request LINE is waiting on.
 #
-# Nothing is retried. A reply token is spent once, so a second attempt would
-# answer with a token LINE has already refused — a run that failed has nothing
-# left to reply with.
+# The job is never retried. A reply token is spent by a reply that reached
+# someone, so running the whole thing again would answer with a token already
+# used — and the writing it would repeat costs a minute nobody is waiting
+# through twice.
+#
+# A reply LINE refused is the exception, because nothing was delivered and so
+# nothing was spent. It is answered once more, with a sentence instead of a
+# card, and that second answer is not retried either.
 class AnswerMessageJob < ApplicationJob
   # A reply token authorises one message to one person, and the text beside it
   # is what that person wrote. Active Job prints a job's arguments verbatim and
@@ -29,7 +34,8 @@ class AnswerMessageJob < ApplicationJob
     result = card_for(text)
     announce(result)
 
-    reply(reply_token, message_for(result))
+    refusal = reply(reply_token, message_for(result))
+    refused(reply_token, refusal) if refusal
   end
 
   private
@@ -100,6 +106,22 @@ class AnswerMessageJob < ApplicationJob
     Line::Bot::V2::MessagingApi::TextMessage.new(text: sentence)
   end
 
+  # A card the sandbox assembled can still break a rule that lives only at LINE,
+  # and that is the one failure this path reaches with everything else already
+  # done: the script is written down, the page is showing it as the answer, and
+  # the sender has watched an animation resolve into nothing.
+  #
+  # The token is spent by a reply that was *delivered*, and a body LINE refused
+  # on validation delivered nothing — so the same token still carries a sentence
+  # saying so. LINE does not put that in writing, which is why the second reply
+  # is sent for its own sake and its own refusal only reaches the log: the page
+  # has been told either way.
+  def refused(token, refusal)
+    @chat&.broadcast_failure(refusal)
+    reply(token, Line::Bot::V2::MessagingApi::TextMessage.new(text: refusal))
+  end
+
+  # Answers with the refusal LINE gave, or nil when the reply went out.
   def reply(token, message)
     body, status, _headers = client.reply_message_with_http_info(
       reply_message_request: Line::Bot::V2::MessagingApi::ReplyMessageRequest.new(
@@ -107,9 +129,12 @@ class AnswerMessageJob < ApplicationJob
         messages: [ message ]
       )
     )
+    return if status == 200
 
     # A refused reply arrives as a status code; the SDK does not raise for it.
-    logger.error("LINE refused the reply with #{status} — #{refusal(body)}") unless status == 200
+    sentence = "LINE would not show the card: #{refusal(body)}"
+    logger.error("#{sentence} (#{status})")
+    sentence
   end
 
   # LINE says which property it refused and why, and this is the only place
