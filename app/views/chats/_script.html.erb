@@ -1,7 +1,12 @@
+<%# locals: (chat:, state:, note: nil) %>
 <%# Replaced in place every time the writer produces another version, so this
-    root element is what each broadcast aims at — and what makes the arrival
-    visible, since every version lands as a fresh element. %>
+    root element is what each broadcast aims at. `state` is one of three words
+    and nothing else — what happened is a sentence, and a sentence handed to the
+    state would name a state nothing recognises. %>
 <div id="<%= chat.script_id %>" class="script">
   <p class="state" data-state="<%= state %>"><%= state %></p>
+  <% if note.present? %>
+    <p class="note"><%= note %></p>
+  <% end %>
   <pre><code><%= highlighted(chat.script) %></code></pre>
 </div>

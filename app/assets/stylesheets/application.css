@@ -218,6 +218,15 @@ blockquote {
   color: var(--theme-primary);
 }
 
+/* What happened, in the words the sender was given. It stands beside the state
+   rather than inside it, because a state is a word and this is a sentence. */
+.note {
+  margin: 0 0 1rem;
+  font-size: var(--text-note);
+  line-height: var(--leading-body);
+  color: var(--theme-neutral);
+}
+
 /* Two animations rather than one, because a keyframe animation carries a single
    timing function for everything it touches: the rise covers ground and
    decelerates into place, while the fade has none to cover and spreads itself

@@ -125,6 +125,10 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
       message = JSON.parse(request.body)["messages"].first
       message["type"] == "text" && message["text"].include?("could not be written")
     end
+    # The card is in one of three states and the sentence says what happened.
+    # Handing the sentence to the state instead names a state nothing
+    # recognises, and the page then shows a failure as though it were ordinary.
+    assert_match %(data-state="Error"), pushed.last.to_html
     assert_match "could not be written", pushed.last.text
   end
 

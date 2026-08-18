@@ -30,13 +30,20 @@ class Chat < ApplicationRecord
     broadcast_state(state)
   end
 
+  # A run that produced no card at all. The state is one of three words and is
+  # the model's to name; what happened is a sentence only the run knows, so it
+  # travels beside the state rather than in place of it.
+  def broadcast_failure(note)
+    broadcast_state("Error", note: note)
+  end
+
   # Sent where it happens rather than through a job. Every version replaces
   # the same block, and Solid Queue runs three threads — a broadcast that
   # arrives out of order would leave the card showing a version the writer has
   # already moved past.
-  def broadcast_state(state)
+  def broadcast_state(state, note: nil)
     broadcast_replace_to :chats, target: script_id, partial: "chats/script",
-                                 locals: { chat: self, state: state }
+                                 locals: { chat: self, state: state, note: note }
   end
 
   # The one version this chat is showing: the answer once it is settled, and

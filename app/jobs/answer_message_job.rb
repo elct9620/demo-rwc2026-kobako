@@ -60,7 +60,7 @@ class AnswerMessageJob < ApplicationJob
   def announce(result)
     sentence = sentence_for(result)
 
-    @chat&.broadcast_state(sentence) if sentence
+    @chat&.broadcast_failure(sentence) if sentence
   end
 
   # LINE's own answer to a reply that takes a moment. It is decoration on the
