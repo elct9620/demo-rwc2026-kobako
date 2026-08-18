@@ -65,9 +65,11 @@ a decision about the answer. Printing the rows is what a template does, and a
 template needs no sandbox: the boundary is only worth its cost when the layout
 is code written to answer something.
 
-A card names an event but does not link to it. The Flex DSL lends two actions,
-`message` and `postback`, and neither opens a URL — so a link on a card would
-be a string nobody can tap, and the tool does not return one.
+A card names an event but does not link to it. The vocabulary lends two
+actions, `message` and `postback`, and neither opens a URL — so a link on a
+card would be a string nobody can tap, and the tool does not return one. The
+builder has a `uri` action; it is left out because what this demo shows is a
+layout written as code, and tapping through to a page is not part of that.
 
 | Source | What it carries |
 | --- | --- |
@@ -114,8 +116,9 @@ Nothing in the brief is restated from the code. The vocabulary is one contract
 in two directions — the ceiling the sandbox enforces and what the writer aims
 at — and it is handed over as an RBS rather than a list of names, because a
 name says what may be called and a signature says how. A verb belongs to one
-kind of node and not another, and a keyword no signature mentions is dropped
-in silence, which is the one mistake nothing on this path can catch.
+kind of node and not another, and a keyword no signature mentions is refused
+by the builder — so the signature is what saves a round trip through the
+check, rather than the only thing standing between a mistake and the sender.
 
 The same holds for the tool's name, the carousel's ceiling and today's date. A
 test fails if any of them reaches one side and not the other, another asserts

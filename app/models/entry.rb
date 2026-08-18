@@ -16,8 +16,8 @@ class Entry < ApplicationRecord
   }
 
   # What the writer is told about an entry. The link is left out on purpose:
-  # the Flex DSL lends no uri action, so a URL on a card is a string nobody can
-  # tap. Empty fields are dropped rather than sent as null — a source that
+  # the vocabulary lends no uri action, so a URL on a card is a string nobody
+  # can tap. Empty fields are dropped rather than sent as null — a source that
   # cannot fill a column has nothing to say about it.
   def as_json(*)
     {

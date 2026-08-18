@@ -147,7 +147,7 @@ class SearchEntriesToolTest < ActiveSupport::TestCase
     assert_equal SearchEntriesTool::MAX_LIMIT, answer["entries"].size
   end
 
-  # The Flex DSL lends no uri action, so a link is a string nobody can tap.
+  # The vocabulary lends no uri action, so a link is a string nobody can tap.
   # Sending it anyway spends the writer's context on something it cannot use.
   test "the link is not among what the writer is told" do
     answer = SearchEntriesTool.new.execute(query: "八月小聚")
