@@ -36,14 +36,13 @@
   --text-sub: 0.875rem; /* 14 */
   --text-note: 0.75rem; /* 12 */
 
-  /* Leading answers a question about the text rather than about its size.
-     `none` is for a line laid out as a single line, where the line box has to
-     equal the type size for the box around it to measure out; `body` is for
-     anything that may wrap; `heading` sits between and hands the extra back
-     through a negative margin, so a one-line heading still lands where the
-     design file's 100% put it. */
+  /* Leading answers a question about the text rather than about its size, so it
+     is asked per element: `none` where a line is laid out as a single line and
+     the line box has to equal the type size for the box around it to measure
+     out, `body` where the text may wrap. The theme's third answer sits between
+     them for a heading that may run to two lines, and nothing on this page is
+     one — the only heading it carries is a wordmark of one word. */
   --leading-none: 1;
-  --leading-heading: 1.25;
   --leading-body: 1.5;
 
   /* Futura has no CJK glyphs, so a CJK face after it satisfies both from one
@@ -197,12 +196,6 @@ main {
 blockquote {
   margin: 0 0 0.5rem;
   font-weight: 500;
-  line-height: var(--leading-body);
-}
-
-/* Anything that can run to a second line takes the copy leading. */
-p,
-li {
   line-height: var(--leading-body);
 }
 
