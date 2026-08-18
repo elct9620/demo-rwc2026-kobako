@@ -139,8 +139,9 @@ version the writer runs through `layout_check`, and a last time by the answer it
 settles on. Each version is pushed over Action Cable as it lands, so the page
 follows the writing rather than polling for it.
 
-Three things reach the page and nothing else does — the question, each version
-checked, and the answer. The brief is the same on every chat, what the writer
+Four things reach the page and nothing else does — the question, each version
+checked, the answer, and the reasoning that settled alongside it, shut until
+someone asks for it. The brief is the same on every chat, what the writer
 looked up is material rather than layout, and the empty row a turn starts as is
 not a version of anything. So the page shows what the sandbox was asked about,
 not a transcript of the exchange. It does show the question as it was sent, to

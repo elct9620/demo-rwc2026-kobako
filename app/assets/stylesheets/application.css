@@ -251,6 +251,35 @@ blockquote {
   color: var(--theme-neutral);
 }
 
+/* How the writer got to this card, which arrives only with the settled answer
+   and is shut until it is asked for — the script is what the page is for, and
+   a paragraph above it would push the thing being demonstrated off the screen.
+   The button annotates the block rather than acting on the page, so it takes
+   the note's step and carries the page's colour to read as tappable instead of
+   being drawn as a control. */
+.reasoning {
+  margin: 0 0 1rem;
+}
+
+.reasoning button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--theme-primary);
+  font-family: inherit;
+  font-size: var(--text-note);
+  line-height: var(--leading-none);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.reasoning p {
+  margin: 0.5rem 0 0;
+  font-size: var(--text-note);
+  line-height: var(--leading-body);
+  color: var(--theme-neutral);
+}
+
 /* Two animations rather than one, because a keyframe animation carries a single
    timing function for everything it touches: the rise covers ground and
    decelerates into place, while the fade has none to cover and spreads itself

@@ -54,11 +54,15 @@ class Chat < ApplicationRecord
     answer || draft
   end
 
-  # Structured output is not text, so it lands in +content_raw+ where the
-  # column for prose stays empty. That is also what tells the settled answer
-  # apart from the turns that only called a tool, which fill neither.
   def answer
-    messages.where.not(content_raw: nil).last&.content_raw&.dig("script")
+    settled&.dig("script")
+  end
+
+  # How the writer got from the question to this card. It travels in the same
+  # settled answer as the script, so a chat still being written has none — the
+  # page shows it only once there is nothing left to revise.
+  def reasoning
+    settled&.dig("reasoning")
   end
 
   # What the writer last handed the sandbox to check. It is an argument to the
@@ -66,5 +70,14 @@ class Chat < ApplicationRecord
   # version that was rejected is written down.
   def draft
     ToolCall.where(message: messages, name: LayoutCheckTool.new.name).last&.arguments&.dig("script")
+  end
+
+  private
+
+  # Structured output is not text, so it lands in +content_raw+ where the column
+  # for prose stays empty. That is also what tells the settled answer apart from
+  # the turns that only called a tool, which fill neither.
+  def settled
+    messages.where.not(content_raw: nil).last&.content_raw
   end
 end

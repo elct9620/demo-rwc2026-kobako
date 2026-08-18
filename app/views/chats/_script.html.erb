@@ -16,5 +16,14 @@
   <%# Reproduced, not authored — a heading here would give the page's own voice
       to words the sender typed. %>
   <blockquote><%= chat.question %></blockquote>
+  <%# Between the question and the script because that is the order it was
+      arrived at in, and shut because the script is what the page is for — the
+      thinking is there to be asked for, not read past. %>
+  <% if chat.reasoning.present? %>
+    <div class="reasoning" data-controller="disclosure">
+      <button type="button" data-action="disclosure#toggle">Reasoning</button>
+      <p data-disclosure-target="body" hidden><%= chat.reasoning %></p>
+    </div>
+  <% end %>
   <pre><code><%= highlighted(chat.script) %></code></pre>
 </div>

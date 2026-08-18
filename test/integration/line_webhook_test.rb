@@ -212,6 +212,13 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
     get "/"
     assert_match "cafe", response.body
     assert_match "answered", response.body
+    # The reasoning rides in the same settled answer as the script, so it lands
+    # on the page with the last version and not before — the drafts have none to
+    # show, and a block that appeared halfway through would be showing thinking
+    # about a card the writer had not finished.
+    assert_no_match(/six equal bubbles/, pushed[2].text)
+    assert_match "six equal bubbles", pushed[3].text
+    assert_select "##{Chat.sole.script_id} .reasoning [data-disclosure-target='body'][hidden]"
     # Where each push lands is named twice — once by the model, once by the
     # page — and a prepend that lands nowhere is invisible: the broadcast still
     # goes out and the card simply never appears. So the page is asked for both
@@ -359,12 +366,16 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
 
   # A schema is in force, so the fields come back as JSON inside the
   # assistant's message rather than as prose around it.
-  def written(script)
+  def written(script, reasoning: "Six talks and nothing joining them, so six equal bubbles.")
     {
       id: "chatcmpl-for-tests",
       model: "gpt-5-mini",
       choices: [
-        { index: 0, message: { role: "assistant", content: { script: script }.to_json }, finish_reason: "stop" }
+        {
+          index: 0,
+          message: { role: "assistant", content: { reasoning: reasoning, script: script }.to_json },
+          finish_reason: "stop"
+        }
       ]
     }.to_json
   end
