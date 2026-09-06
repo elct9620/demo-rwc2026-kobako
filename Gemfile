@@ -18,7 +18,7 @@ gem "stimulus-rails"
 gem "jbuilder"
 
 # Evaluate untrusted mruby inside a Wasm sandbox [https://github.com/elct9620/kobako]
-gem "kobako", "~> 0.22"
+gem "kobako", "~> 0.23"
 # The Flex Message DSL the sandboxed script speaks [https://github.com/elct9620/line-message-builder]
 gem "line-message-builder"
 # LINE Messaging API client and message types [https://github.com/line/line-bot-sdk-ruby]
