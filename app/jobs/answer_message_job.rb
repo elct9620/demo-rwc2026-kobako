@@ -52,7 +52,7 @@ class AnswerMessageJob < ApplicationJob
   # before the sandbox does.
   def card_for(text)
     @chat = FlexMessageAgent.create!
-    LineFlex.render(@chat.ask(text).content.fetch("script"))
+    LineFlex.render(@chat.ask(text).parsed.fetch("script"))
   rescue StandardError => e
     logger.error("The layout could not be written: #{e.class}: #{e.message}")
     :unwritten

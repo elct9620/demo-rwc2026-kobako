@@ -31,13 +31,13 @@ class SearchEntriesTool < RubyLLM::Tool
     rather than assuming the rest is nothing.
   TEXT
 
-  param :query, desc: "Words to look for in an entry's title or summary. Omit to filter without searching.", required: false
-  param :source, desc: "Limit to one source: #{Entry.sources.keys.join(", ")}.", required: false
-  param :from, desc: "Only entries published on or after this date, as YYYY-MM-DD.", required: false
-  param :to, desc: "Only entries published on or before this date, as YYYY-MM-DD.", required: false
-  param :order, desc: "#{ORDERS.keys.join(" or ")} first. Defaults to newest.", required: false
-  param :limit, type: "integer", desc: "How many rows to return, at most #{MAX_LIMIT}. Defaults to #{DEFAULT_LIMIT}.", required: false
-  param :offset, type: "integer", desc: "How many rows to skip before returning any, so the same filter can be read on past where it was left. Defaults to 0.", required: false
+  parameter :query, description: "Words to look for in an entry's title or summary. Omit to filter without searching.", required: false
+  parameter :source, description: "Limit to one source: #{Entry.sources.keys.join(", ")}.", required: false
+  parameter :from, description: "Only entries published on or after this date, as YYYY-MM-DD.", required: false
+  parameter :to, description: "Only entries published on or before this date, as YYYY-MM-DD.", required: false
+  parameter :order, description: "#{ORDERS.keys.join(" or ")} first. Defaults to newest.", required: false
+  parameter :limit, type: "integer", description: "How many rows to return, at most #{MAX_LIMIT}. Defaults to #{DEFAULT_LIMIT}.", required: false
+  parameter :offset, type: "integer", description: "How many rows to skip before returning any, so the same filter can be read on past where it was left. Defaults to 0.", required: false
 
   def execute(query: nil, source: nil, from: nil, to: nil, order: nil, limit: nil, offset: nil)
     return unknown(:source, source, Entry.sources.keys) if source.present? && !Entry.sources.key?(source)

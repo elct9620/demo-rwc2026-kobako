@@ -13,7 +13,7 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
   }.freeze
   REPLY_URL = "https://api.line.me/v2/bot/message/reply"
   LOADING_URL = "https://api.line.me/v2/bot/chat/loading/start"
-  WRITER_URL = "https://api.openai.com/v1/chat/completions"
+  WRITER_URL = "https://api.openai.com/v1/responses"
   USER_ID = "Udeadbeefdeadbeefdeadbeefdeadbeef"
   JSON_TYPE = { "Content-Type" => "application/json" }.freeze
   SCRIPT = <<~MRUBY
@@ -329,23 +329,16 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
     @asked = (@asked || 0) + 1
 
     {
-      id: "chatcmpl-for-tests",
+      id: "resp-for-tests-#{@asked}",
+      status: "completed",
       model: "gpt-5-mini",
-      choices: [
+      output: [
         {
-          index: 0,
-          message: {
-            role: "assistant",
-            content: nil,
-            tool_calls: [
-              {
-                id: "call-for-tests-#{@asked}",
-                type: "function",
-                function: { name: tool.to_s, arguments: arguments.to_json }
-              }
-            ]
-          },
-          finish_reason: "tool_calls"
+          type: "function_call",
+          id: "fc-for-tests-#{@asked}",
+          call_id: "call-for-tests-#{@asked}",
+          name: tool.to_s,
+          arguments: arguments.to_json
         }
       ]
     }.to_json
@@ -368,13 +361,14 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
   # assistant's message rather than as prose around it.
   def written(script, reasoning: "Six talks and nothing joining them, so six equal bubbles.")
     {
-      id: "chatcmpl-for-tests",
+      id: "resp-for-tests",
+      status: "completed",
       model: "gpt-5-mini",
-      choices: [
+      output: [
         {
-          index: 0,
-          message: { role: "assistant", content: { reasoning: reasoning, script: script }.to_json },
-          finish_reason: "stop"
+          type: "message",
+          role: "assistant",
+          content: [ { type: "output_text", text: { reasoning: reasoning, script: script }.to_json } ]
         }
       ]
     }.to_json

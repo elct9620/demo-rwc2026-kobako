@@ -69,15 +69,17 @@ class Chat < ApplicationRecord
   # tool call rather than anything the model said, so this is the only place a
   # version that was rejected is written down.
   def draft
-    ToolCall.where(message: messages, name: LayoutCheckTool.new.name).last&.arguments&.dig("script")
+    check = LayoutCheckTool.new.name
+    messages.where(role: "assistant").order(:id).flat_map { |message| message.tool_calls.values }
+            .select { |call| call.name == check }.last&.arguments&.dig("script")
   end
 
   private
 
-  # Structured output is not text, so it lands in +content_raw+ where the column
-  # for prose stays empty. That is also what tells the settled answer apart from
-  # the turns that only called a tool, which fill neither.
+  # With a schema in force every word the writer says is the answer, so the
+  # settled one is the only assistant turn with text in it — the turns that
+  # only called a tool have none.
   def settled
-    messages.where.not(content_raw: nil).last&.content_raw
+    messages.where(role: "assistant").where.not(content: [ nil, "" ]).last&.parsed
   end
 end

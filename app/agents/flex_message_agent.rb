@@ -13,8 +13,9 @@ class FlexMessageAgent < RubyLLM::Agent
   # conversation.
   chat_model Chat
 
-  # app/prompts/flex_message_agent/instructions.txt.erb
-  instructions
+  # app/prompts/flex_message_agent/instructions.txt.erb, named so that a
+  # missing brief fails the run rather than leaving the writer with none.
+  instructions { prompt("instructions") }
 
   # In the order they are reached for: filter what the community actually
   # posted, then check the layout written from it.

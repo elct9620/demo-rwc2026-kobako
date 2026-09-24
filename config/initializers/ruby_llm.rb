@@ -1,10 +1,4 @@
-# RubyLLM's 1.x default mixes the deprecated acts_as API into every model and
-# announces it on every boot. This demo takes the association-based API, which
-# is also what the persisted chat records are declared against, and starts
-# quiet.
 RubyLLM.configure do |config|
-  config.use_new_acts_as = true
-
   # Absent here, the answer never comes and the sender is told so. Naming it at
   # boot instead would take the whole app down for a credential only one path
   # needs.

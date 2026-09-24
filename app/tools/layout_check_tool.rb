@@ -17,7 +17,7 @@ class LayoutCheckTool < RubyLLM::Tool
     report whether it assembled a Flex Message. Call this before answering.
   TEXT
 
-  param :script, desc: "The layout script to run, exactly as it would be answered."
+  parameter :script, description: "The layout script to run, exactly as it would be answered."
 
   def execute(script:)
     @checks = (@checks || 0) + 1

@@ -6,8 +6,18 @@ class Message < ApplicationRecord
   # record itself does not say what was asked.
   after_create_commit -> { chat.broadcast_card }, if: -> { role == "user" }
 
-  # The settled answer arrives as an update: the row is created empty and
-  # filled once the model has finished. Structured output lands in
-  # +content_raw+, which is what a turn that only called a tool leaves blank.
-  after_update_commit -> { chat.broadcast_script }, if: -> { content_raw.present? }
+  # Every writer turn arrives as an update: the row is created empty and filled
+  # once the model has finished, in the same commit as the tool calls it made.
+  # So this is where both a version sent to the sandbox and the settled answer
+  # reach the page — a check carries the version being checked, and a script
+  # the sandbox turned down never reaches a message, so the call that asked
+  # about it is its only trace. What the writer looked up stays off the card —
+  # the card is about the layout, not the material.
+  after_update_commit -> { chat.broadcast_script }, if: -> { role == "assistant" && (content.present? || checked?) }
+
+  private
+
+  def checked?
+    tool_calls.each_value.any? { |call| call.name == LayoutCheckTool.new.name }
+  end
 end
