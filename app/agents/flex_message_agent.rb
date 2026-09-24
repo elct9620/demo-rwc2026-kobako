@@ -21,8 +21,8 @@ class FlexMessageAgent < RubyLLM::Agent
   # posted, then check the layout written from it.
   tools SearchEntriesTool, LayoutCheckTool
 
-  # Wanting this alongside the tools is what pins the model to an older
-  # generation; the initializer says why.
+  # Wanting this alongside the tools is what ties the writer to OpenAI's
+  # Responses API; the initializer says why.
   thinking effort: "medium"
 
   # The script is the whole answer, and the field ahead of it is what has to be

@@ -331,7 +331,7 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
     {
       id: "resp-for-tests-#{@asked}",
       status: "completed",
-      model: "gpt-5-mini",
+      model: "gpt-5.6-luna",
       output: [
         {
           type: "function_call",
@@ -363,7 +363,7 @@ class LineWebhookTest < ActionDispatch::IntegrationTest
     {
       id: "resp-for-tests",
       status: "completed",
-      model: "gpt-5-mini",
+      model: "gpt-5.6-luna",
       output: [
         {
           type: "message",

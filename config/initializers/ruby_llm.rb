@@ -13,10 +13,11 @@ RubyLLM.configure do |config|
   # The model is written down so the demo answers the same way twice, and
   # overridable so trying another one is not a commit.
   #
-  # It sits a generation back because the writer needs tools and reasoning at
-  # once, and from gpt-5.4 onwards that pair only travels on OpenAI's Responses
-  # API — which ruby_llm does not speak yet.
-  config.default_model = ENV.fetch("OPENAI_MODEL", "gpt-5-mini")
+  # The writer needs tools and reasoning at once, and from gpt-5.4 onwards that
+  # pair only travels on OpenAI's Responses API. That is the protocol ruby_llm
+  # speaks to OpenAI unless told otherwise, so moving it to Chat Completions
+  # would take this model's reasoning or its tools away.
+  config.default_model = ENV.fetch("OPENAI_MODEL", "gpt-5.6-luna")
 
   # Sized for the writing rather than for the reply token. An answer is three
   # calls now — choose the tools, lay out what they returned, check it — and a
