@@ -26,9 +26,9 @@ class FetchFacebookEntriesJob < ApplicationJob
   # of anything that records a URL.
   #
   # Meta expires *data access* on its own 90-day clock, separately from the
-  # token, and the current window closes on 2026-11-15. Nothing announces it:
-  # the call simply starts failing, which is why the log line matters here more
-  # than on the other two sources.
+  # token, and only authorising the page again restarts it. Nothing announces
+  # it: the call simply starts failing, which is why the log line matters here
+  # more than on the other two sources.
   def posts_url
     "https://graph.facebook.com/#{GRAPH_VERSION}/#{ENV.fetch("FB_PAGE_ID")}/posts?fields=#{FIELDS}"
   end
