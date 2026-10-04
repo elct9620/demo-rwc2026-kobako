@@ -151,7 +151,7 @@ GEM
     kobako (0.27.0-x86_64-linux-musl)
       msgpack (~> 1.7)
     language_server-protocol (3.17.0.6)
-    line-bot-api (2.10.0)
+    line-bot-api (2.11.0)
       base64 (~> 0.2)
       multipart-post (~> 2.4)
     line-message-builder (0.10.0)
@@ -462,7 +462,7 @@ CHECKSUMS
   kobako (0.27.0-x86_64-linux) sha256=9acd4ba800c0f8ea96bd1081505e08b503b966e858a093aa1c027c2d1b6456b9
   kobako (0.27.0-x86_64-linux-musl) sha256=bebf9bb89d4d7f15413c77672a56d30d5ec86b28de29b26038958cb8978abbdc
   language_server-protocol (3.17.0.6) sha256=5ef2c0c138f8267e1bc631d3328347d354f96724b0af22f2c79516120443b7f0
-  line-bot-api (2.10.0) sha256=065e04a08d00cbf30f90db07749a119d808e344ce31f051e851a5a66ee17fa7f
+  line-bot-api (2.11.0) sha256=08219466576288ab5b58df982f8c3c2d39ace7695e6ad682fc5a7db6bd67e2e2
   line-message-builder (0.10.0) sha256=0c483d91e4c36dc442dd740be5ce9bdd25e61ac37cd61f437eb8117562dfb9c6
   lint_roller (1.1.0) sha256=2c0c845b632a7d172cb849cc90c1bce937a28c5c8ccccb50dfd46a485003cc87
   logger (1.7.0) sha256=196edec7cc44b66cfb40f9755ce11b392f21f7967696af15d274dde7edff0203
