@@ -137,19 +137,19 @@ GEM
       actionview (>= 7.0.0)
       activesupport (>= 7.0.0)
     json (2.21.2)
-    kobako (0.27.0)
-      msgpack (~> 1.7)
+    kobako (0.29.0)
+      msgpack (>= 1.8.2, < 2)
       rb_sys (~> 0.9.128)
-    kobako (0.27.0-aarch64-linux)
-      msgpack (~> 1.7)
-    kobako (0.27.0-aarch64-linux-musl)
-      msgpack (~> 1.7)
-    kobako (0.27.0-arm64-darwin)
-      msgpack (~> 1.7)
-    kobako (0.27.0-x86_64-linux)
-      msgpack (~> 1.7)
-    kobako (0.27.0-x86_64-linux-musl)
-      msgpack (~> 1.7)
+    kobako (0.29.0-aarch64-linux)
+      msgpack (>= 1.8.2, < 2)
+    kobako (0.29.0-aarch64-linux-musl)
+      msgpack (>= 1.8.2, < 2)
+    kobako (0.29.0-arm64-darwin)
+      msgpack (>= 1.8.2, < 2)
+    kobako (0.29.0-x86_64-linux)
+      msgpack (>= 1.8.2, < 2)
+    kobako (0.29.0-x86_64-linux-musl)
+      msgpack (>= 1.8.2, < 2)
     language_server-protocol (3.17.0.6)
     line-bot-api (2.10.0)
       base64 (~> 0.2)
@@ -172,7 +172,7 @@ GEM
       drb (~> 2.0)
       prism (~> 1.5)
     minitest-mock (5.27.0)
-    msgpack (1.8.5)
+    msgpack (1.8.7)
     multipart-post (2.4.1)
     net-http (0.9.1)
       uri (>= 0.11.1)
@@ -388,7 +388,7 @@ DEPENDENCIES
   debug
   importmap-rails
   jbuilder
-  kobako (~> 0.27)
+  kobako (~> 0.29)
   line-bot-api
   line-message-builder
   minitest-mock
@@ -455,12 +455,12 @@ CHECKSUMS
   irb (1.18.0) sha256=de9454a0703a54704b9811a5ef31a60c86949fbf4013fcf244fabc7c775248e3
   jbuilder (2.15.1) sha256=2430bec28fb0cebacb5875b1009cf9d8bc3c303ccb810c4c8b062a4b51457637
   json (2.21.2) sha256=1f1d3b7cf2b3ba1a69beca0bb6db13d5438b80bff3cd54cdaaa620b9b07c1c6a
-  kobako (0.27.0) sha256=b9683f9c08bad3f57466f09082a109054248cecac997d540a32c4ae17332a4e0
-  kobako (0.27.0-aarch64-linux) sha256=94907708f4ecd61725568a0a7e42061dca7724db9d38cd2aad897f492a5d980d
-  kobako (0.27.0-aarch64-linux-musl) sha256=f20e3c70c77d3b9f4597bfece61fbdf60a742605a8cdf0d2791b41f31252a2d4
-  kobako (0.27.0-arm64-darwin) sha256=491e7da57043e376e4e6330784861515df69d952870d40a76ac5a08f65d310c0
-  kobako (0.27.0-x86_64-linux) sha256=9acd4ba800c0f8ea96bd1081505e08b503b966e858a093aa1c027c2d1b6456b9
-  kobako (0.27.0-x86_64-linux-musl) sha256=bebf9bb89d4d7f15413c77672a56d30d5ec86b28de29b26038958cb8978abbdc
+  kobako (0.29.0) sha256=c95f661d967087a5653fc5f3bf7cab1c786e0002ff248ae69f79be4cad9b1265
+  kobako (0.29.0-aarch64-linux) sha256=15a336f947f92a83e2524bbb6bfd19086c9df2003b4235046c034c9e1a6cba33
+  kobako (0.29.0-aarch64-linux-musl) sha256=5213291e839122539ee42dbbfb7001bc37c95d8b7b294808104bae5293e0d8b1
+  kobako (0.29.0-arm64-darwin) sha256=9089d47bd77a29a1f370bfba9907990db493c2c0e29a793e569d37442aa10bad
+  kobako (0.29.0-x86_64-linux) sha256=39cfa30f49f1bd3cf9e37ec0709a1767f9e152ccd042f2908660355bdb348f4b
+  kobako (0.29.0-x86_64-linux-musl) sha256=ec98d1e70b583cea504bc5f760ae143ead3746aa76558a5719a2435e925f5fee
   language_server-protocol (3.17.0.6) sha256=5ef2c0c138f8267e1bc631d3328347d354f96724b0af22f2c79516120443b7f0
   line-bot-api (2.10.0) sha256=065e04a08d00cbf30f90db07749a119d808e344ce31f051e851a5a66ee17fa7f
   line-message-builder (0.10.0) sha256=0c483d91e4c36dc442dd740be5ce9bdd25e61ac37cd61f437eb8117562dfb9c6
@@ -472,7 +472,7 @@ CHECKSUMS
   mini_mime (1.1.5) sha256=8681b7e2e4215f2a159f9400b5816d85e9d8c6c6b491e96a12797e798f8bccef
   minitest (6.0.6) sha256=153ea36d1d987a62942382b61075745042a2b3123b1cd48f4c3675af9cc7d6f1
   minitest-mock (5.27.0) sha256=7040ed7185417a966920987eaa6eaf1be4ea1fc5b25bb03ff4703f98564a55b0
-  msgpack (1.8.5) sha256=97419eaa7b35dfe3e462c0e6c1a3dfdcbfc8756605c09e46e4c6daef127517ba
+  msgpack (1.8.7) sha256=dfefec761b5f9047e6e8d95d2c7f8af4b3725d984a01942adc533aa819a2df33
   multipart-post (2.4.1) sha256=9872d03a8e552020ca096adadbf5e3cb1cd1cdd6acd3c161136b8a5737cdb4a8
   net-http (0.9.1) sha256=25ba0b67c63e89df626ed8fac771d0ad24ad151a858af2cc8e6a716ca4336996
   net-imap (0.6.6) sha256=96aa4ee50df3060203e649efc341f53480b791d49e150f2fdebf68beb141a8df
