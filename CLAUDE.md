@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-A **talk demo**: a Rails 8.1 app (Ruby 3.4.7, module `DynamicFlexMessage`) that
+A **talk demo**: a Rails 8.1 app (Ruby 3.4.13, module `DynamicFlexMessage`) that
 runs untrusted mruby inside a **Kobako** WASM sandbox to produce a LINE Flex
 Message payload — the message layout is code the sandbox evaluates, not a
 template baked into the app.
