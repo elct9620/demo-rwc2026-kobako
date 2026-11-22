@@ -137,19 +137,19 @@ GEM
       actionview (>= 7.0.0)
       activesupport (>= 7.0.0)
     json (2.21.2)
-    kobako (0.27.0)
-      msgpack (~> 1.7)
+    kobako (0.31.0)
+      msgpack (>= 1.8.6, < 2)
       rb_sys (~> 0.9.128)
-    kobako (0.27.0-aarch64-linux)
-      msgpack (~> 1.7)
-    kobako (0.27.0-aarch64-linux-musl)
-      msgpack (~> 1.7)
-    kobako (0.27.0-arm64-darwin)
-      msgpack (~> 1.7)
-    kobako (0.27.0-x86_64-linux)
-      msgpack (~> 1.7)
-    kobako (0.27.0-x86_64-linux-musl)
-      msgpack (~> 1.7)
+    kobako (0.31.0-aarch64-linux)
+      msgpack (>= 1.8.6, < 2)
+    kobako (0.31.0-aarch64-linux-musl)
+      msgpack (>= 1.8.6, < 2)
+    kobako (0.31.0-arm64-darwin)
+      msgpack (>= 1.8.6, < 2)
+    kobako (0.31.0-x86_64-linux)
+      msgpack (>= 1.8.6, < 2)
+    kobako (0.31.0-x86_64-linux-musl)
+      msgpack (>= 1.8.6, < 2)
     language_server-protocol (3.17.0.6)
     line-bot-api (2.10.0)
       base64 (~> 0.2)
@@ -168,6 +168,7 @@ GEM
       net-smtp
     marcel (1.2.1)
     mini_mime (1.1.5)
+    mini_portile2 (2.8.9)
     minitest (6.0.6)
       drb (~> 2.0)
       prism (~> 1.5)
@@ -186,6 +187,9 @@ GEM
     net-smtp (0.5.1)
       net-protocol
     nio4r (2.7.5)
+    nokogiri (1.19.7)
+      mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
     nokogiri (1.19.7-aarch64-linux-gnu)
       racc (~> 1.4)
     nokogiri (1.19.7-aarch64-linux-musl)
@@ -333,6 +337,8 @@ GEM
       fugit (~> 1.11)
       railties (>= 7.1)
       thor (>= 1.3.1)
+    sqlite3 (2.10.2)
+      mini_portile2 (~> 2.8.0)
     sqlite3 (2.10.2-aarch64-linux-gnu)
     sqlite3 (2.10.2-aarch64-linux-musl)
     sqlite3 (2.10.2-arm-linux-gnu)
@@ -388,7 +394,7 @@ DEPENDENCIES
   debug
   importmap-rails
   jbuilder
-  kobako (~> 0.27)
+  kobako (~> 0.31)
   line-bot-api
   line-message-builder
   minitest-mock
@@ -456,12 +462,12 @@ CHECKSUMS
   irb (1.18.0) sha256=de9454a0703a54704b9811a5ef31a60c86949fbf4013fcf244fabc7c775248e3
   jbuilder (2.15.1) sha256=2430bec28fb0cebacb5875b1009cf9d8bc3c303ccb810c4c8b062a4b51457637
   json (2.21.2) sha256=1f1d3b7cf2b3ba1a69beca0bb6db13d5438b80bff3cd54cdaaa620b9b07c1c6a
-  kobako (0.27.0) sha256=b9683f9c08bad3f57466f09082a109054248cecac997d540a32c4ae17332a4e0
-  kobako (0.27.0-aarch64-linux) sha256=94907708f4ecd61725568a0a7e42061dca7724db9d38cd2aad897f492a5d980d
-  kobako (0.27.0-aarch64-linux-musl) sha256=f20e3c70c77d3b9f4597bfece61fbdf60a742605a8cdf0d2791b41f31252a2d4
-  kobako (0.27.0-arm64-darwin) sha256=491e7da57043e376e4e6330784861515df69d952870d40a76ac5a08f65d310c0
-  kobako (0.27.0-x86_64-linux) sha256=9acd4ba800c0f8ea96bd1081505e08b503b966e858a093aa1c027c2d1b6456b9
-  kobako (0.27.0-x86_64-linux-musl) sha256=bebf9bb89d4d7f15413c77672a56d30d5ec86b28de29b26038958cb8978abbdc
+  kobako (0.31.0) sha256=37761cc3eae18ca71fa7ad911a479745ee4950c00abb451b91ec4681acdc9076
+  kobako (0.31.0-aarch64-linux) sha256=31ea5bb40190fa5aef57bc7a24e811abc8009e9a91f40bd8a7df5294e42e5526
+  kobako (0.31.0-aarch64-linux-musl) sha256=7259d06c0cc53a480765decda18c55c86b079dba21b9db6facef03a3303ac158
+  kobako (0.31.0-arm64-darwin) sha256=638a05ec27fff10c09ab7b529cf1da8f297bb00129b002eef04bd62946e0f6fc
+  kobako (0.31.0-x86_64-linux) sha256=2f042100742e8690e29f93d6b6cf6243ec221913ce1ea56aae5950cb80c6082e
+  kobako (0.31.0-x86_64-linux-musl) sha256=4d5b7cb6471966542ea209c6f6fca8c4833f12c1a03eec0e8bdd11bdad034ffb
   language_server-protocol (3.17.0.6) sha256=5ef2c0c138f8267e1bc631d3328347d354f96724b0af22f2c79516120443b7f0
   line-bot-api (2.10.0) sha256=065e04a08d00cbf30f90db07749a119d808e344ce31f051e851a5a66ee17fa7f
   line-message-builder (0.10.0) sha256=0c483d91e4c36dc442dd740be5ce9bdd25e61ac37cd61f437eb8117562dfb9c6
@@ -471,6 +477,7 @@ CHECKSUMS
   mail (2.9.1) sha256=06574eca475253d6c18145dd70af80d0eb970182d55053497c5f4d797ea160e8
   marcel (1.2.1) sha256=1678e9360e32f9eafa917c80029e2f6d10b2715c66a4b87b6d0da9b9cd1f859f
   mini_mime (1.1.5) sha256=8681b7e2e4215f2a159f9400b5816d85e9d8c6c6b491e96a12797e798f8bccef
+  mini_portile2 (2.8.9) sha256=0cd7c7f824e010c072e33f68bc02d85a00aeb6fce05bb4819c03dfd3c140c289
   minitest (6.0.6) sha256=153ea36d1d987a62942382b61075745042a2b3123b1cd48f4c3675af9cc7d6f1
   minitest-mock (5.27.0) sha256=7040ed7185417a966920987eaa6eaf1be4ea1fc5b25bb03ff4703f98564a55b0
   msgpack (1.8.7) sha256=dfefec761b5f9047e6e8d95d2c7f8af4b3725d984a01942adc533aa819a2df33
@@ -481,6 +488,7 @@ CHECKSUMS
   net-protocol (0.2.2) sha256=aa73e0cba6a125369de9837b8d8ef82a61849360eba0521900e2c3713aa162a8
   net-smtp (0.5.1) sha256=ed96a0af63c524fceb4b29b0d352195c30d82dd916a42f03c62a3a70e5b70736
   nio4r (2.7.5) sha256=6c90168e48fb5f8e768419c93abb94ba2b892a1d0602cb06eef16d8b7df1dca1
+  nokogiri (1.19.7) sha256=abe94507c54cb18f872777b16bdca4aad32b1abdc4c52fe843f1c80fbdf992b8
   nokogiri (1.19.7-aarch64-linux-gnu) sha256=8f5e15d299602456406e1f03a9f3456cceb33a0722811e818d2ee2214eb4c84a
   nokogiri (1.19.7-aarch64-linux-musl) sha256=efe0c3602e6e54521bc21c681930ce5568e2d11203de17400710b2b3ca2e4cb4
   nokogiri (1.19.7-arm-linux-gnu) sha256=7fd1907125691aa89e838cc91161761c758b4e17bb32f0dd9b5515a82cc759af
@@ -528,6 +536,7 @@ CHECKSUMS
   solid_cable (4.0.2) sha256=084636a67679ad00d23088b33c84047e614bcf41ee559db24b414d83cdc42d03
   solid_cache (1.0.10) sha256=bc05a2fb3ac78a6f43cbb5946679cf9db67dd30d22939ededc385cb93e120d41
   solid_queue (1.7.0) sha256=6566b70b801d1c317c81bba7bcdd5677c019afac584a30374b4164002ca356d3
+  sqlite3 (2.10.2) sha256=f1ea68cd3287f8a49f39a088ac9e4bd0ef4e7f394c3d4a60dd4c7e44b0566964
   sqlite3 (2.10.2-aarch64-linux-gnu) sha256=e9aea2c2b3476fc875dd8a89313a9a2862818519c0186bfb5b56d6f57bb08d98
   sqlite3 (2.10.2-aarch64-linux-musl) sha256=4986fc40cdf21342362b72a941df28e95cfe0e644f3ad2532d948b157c39dbee
   sqlite3 (2.10.2-arm-linux-gnu) sha256=762f609ef891463226b472d3df66aea84d5466ff4376d3ccf4a059718c4ce9c9
